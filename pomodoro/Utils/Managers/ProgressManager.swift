@@ -36,14 +36,14 @@ class ProgressManager: ProgressManagerProtocol {
         circleLayer.fillColor = UIColor.clear.cgColor
         circleLayer.lineCap = .round
         circleLayer.lineWidth = 6.0
-        circleLayer.strokeColor = UIColor.lightGray.cgColor
+        circleLayer.strokeColor = Colors.lightGray.cgColor
         
         progressLayer.path = circularPath.cgPath
         progressLayer.fillColor = UIColor.clear.cgColor
         progressLayer.lineCap = .round
         progressLayer.lineWidth = 6.0
         progressLayer.strokeEnd = 0
-        progressLayer.strokeColor = UIColor.blue.cgColor
+        progressLayer.strokeColor = Colors.baseRed.cgColor
         
         progressView.layer.addSublayer(circleLayer)
         progressView.layer.addSublayer(progressLayer)

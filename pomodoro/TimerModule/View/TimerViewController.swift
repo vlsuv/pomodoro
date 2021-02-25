@@ -14,20 +14,20 @@ class TimerViewController: UIViewController {
     let timeLabel: UILabel = {
         let label = UILabel()
         label.font = .systemFont(ofSize: 46, weight: .medium)
-        label.textColor = .black
+        label.textColor = Colors.darkGray
         return label
     }()
     let startButton: UIButton = {
         let button = UIButton()
         let normalAttributedString = NSAttributedString(string: "Start", attributes: [
             .font: UIFont.systemFont(ofSize: 14, weight: .medium),
-            .foregroundColor: UIColor.white
+            .foregroundColor: Colors.white
         ])
         let selectAttributedString = NSAttributedString(string: "Pause", attributes: [
             .font: UIFont.systemFont(ofSize: 14, weight: .medium),
-            .foregroundColor: UIColor.white
+            .foregroundColor: Colors.white
         ])
-        button.backgroundColor = UIColor.blue
+        button.backgroundColor = Colors.baseRed
         button.setAttributedTitle(normalAttributedString, for: .normal)
         button.setAttributedTitle(selectAttributedString, for: .selected)
         button.addTarget(self, action: #selector(handleStartTimer), for: .touchUpInside)
@@ -37,10 +37,10 @@ class TimerViewController: UIViewController {
         let button = UIButton()
         let normalAttributedString = NSAttributedString(string: "Stop", attributes: [
             .font: UIFont.systemFont(ofSize: 14, weight: .medium),
-            .foregroundColor: UIColor.white
+            .foregroundColor: Colors.white
         ])
         button.setAttributedTitle(normalAttributedString, for: .normal)
-        button.backgroundColor = UIColor.blue
+        button.backgroundColor = Colors.baseRed
         button.addTarget(self, action: #selector(handleStopTimer), for: .touchUpInside)
         return button
     }()
@@ -50,7 +50,8 @@ class TimerViewController: UIViewController {
     // MARK: - Init
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .white
+        view.backgroundColor = Colors.white
+        timeLabel.text = "\(100)"
         
         setupTimeLabel()
         setupTimeButtons()
