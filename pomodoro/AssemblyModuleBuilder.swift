@@ -15,10 +15,12 @@ protocol AssemblyModuleBuilderProtocol {
 final class AssemblyModuleBuilder: AssemblyModuleBuilderProtocol {
     func createTimerViewController() -> UIViewController {
         let view = TimerViewController()
-        let timerManager = TimerManager()
-        let progressManager = ProgressManager()
-        let presenter = TimerViewPresenter(view: view, timerManager: timerManager, progressManager: progressManager)
+        let presenter = TimerViewPresenter(view: view, timerManager: TimerManager(), progressManager: ProgressManager())
         view.presenter = presenter
+        
+        view.tabBarItem.title = "Timer"
+        view.tabBarItem.image = UIImage(systemName: "clock")
+        
         return view
     }
 }

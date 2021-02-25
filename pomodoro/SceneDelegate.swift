@@ -19,7 +19,10 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         
         window = UIWindow(frame: windowScene.coordinateSpace.bounds)
         window?.windowScene = windowScene
-        window?.rootViewController = AssemblyModuleBuilder().createTimerViewController()
+        let tabBarController = UITabBarController()
+        let router = Router(tabBarController: tabBarController, assemblyModuleBuilder: AssemblyModuleBuilder())
+        window?.rootViewController = tabBarController
+        router.initilizationViewController()
         window?.makeKeyAndVisible()
     }
 
