@@ -10,6 +10,8 @@ import UIKit
 
 protocol AssemblyModuleBuilderProtocol {
     func createTimerViewController() -> UIViewController
+    func createSettingsViewController(router: RouterProtocol) -> UIViewController
+    func createTimePickerViewController(router: RouterProtocol, viewController: SettingViewController) -> UIViewController
 }
 
 final class AssemblyModuleBuilder: AssemblyModuleBuilderProtocol {
@@ -22,5 +24,28 @@ final class AssemblyModuleBuilder: AssemblyModuleBuilderProtocol {
         view.tabBarItem.image = UIImage(systemName: "clock")
         
         return view
+    }
+    
+    func createSettingsViewController(router: RouterProtocol) -> UIViewController {
+        let view = SettingViewController()
+        let presenter = SettingViewPresenter(view: view, router: router)
+        view.presenter = presenter
+        
+        view.tabBarItem.title = "Settings"
+        view.tabBarItem.image = UIImage(systemName: "gear")
+        
+        return view
+    }
+    
+    func createTimePickerViewController(router: RouterProtocol, viewController: SettingViewController) -> UIViewController {
+        let view = TimePickerViewController()
+        let presenter = TimePickerViewPresenter(view: view, router: router)
+        view.presenter = presenter
+  
+        let navigationController = UINavigationController(rootViewController: view)
+        navigationController.modalPresentationStyle = .custom
+        navigationController.transitioningDelegate = viewController
+        
+        return navigationController
     }
 }
