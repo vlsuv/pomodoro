@@ -10,6 +10,7 @@
 		673309ED25E7F84100EEB1E3 /* SettingViewPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 673309EC25E7F84100EEB1E3 /* SettingViewPresenter.swift */; };
 		673309EF25E7F90900EEB1E3 /* SettingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 673309EE25E7F90900EEB1E3 /* SettingViewController.swift */; };
 		673BF36225ED29F0009F41B5 /* UITabBarController extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 673BF36125ED29F0009F41B5 /* UITabBarController extensions.swift */; };
+		673BF36425ED33BE009F41B5 /* UserSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 673BF36325ED33BE009F41B5 /* UserSettings.swift */; };
 		6759053925E90CFB0013DB97 /* Setting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6759053825E90CFB0013DB97 /* Setting.swift */; };
 		6759053E25E918F60013DB97 /* TimePickerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6759053D25E918F60013DB97 /* TimePickerViewController.swift */; };
 		6759054025E91DA50013DB97 /* FilterPresentationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6759053F25E91DA50013DB97 /* FilterPresentationController.swift */; };
@@ -45,6 +46,7 @@
 		673309EC25E7F84100EEB1E3 /* SettingViewPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingViewPresenter.swift; sourceTree = "<group>"; };
 		673309EE25E7F90900EEB1E3 /* SettingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingViewController.swift; sourceTree = "<group>"; };
 		673BF36125ED29F0009F41B5 /* UITabBarController extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UITabBarController extensions.swift"; sourceTree = "<group>"; };
+		673BF36325ED33BE009F41B5 /* UserSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserSettings.swift; sourceTree = "<group>"; };
 		6759053825E90CFB0013DB97 /* Setting.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Setting.swift; sourceTree = "<group>"; };
 		6759053D25E918F60013DB97 /* TimePickerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimePickerViewController.swift; sourceTree = "<group>"; };
 		6759053F25E91DA50013DB97 /* FilterPresentationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterPresentationController.swift; sourceTree = "<group>"; };
@@ -174,9 +176,9 @@
 				6792AE6525E6ABFD009358A5 /* Info.plist */,
 				67C0835E25E7E8E500136761 /* Router.swift */,
 				6792AE8A25E6B854009358A5 /* AssemblyModuleBuilder.swift */,
-				6759054125E924780013DB97 /* TimePickerModule */,
-				673309E925E7F7EC00EEB1E3 /* SettingModule */,
 				6792AE7B25E6AC63009358A5 /* TimerModule */,
+				673309E925E7F7EC00EEB1E3 /* SettingModule */,
+				6759054125E924780013DB97 /* TimePickerModule */,
 				6792AE8225E6AF80009358A5 /* Utils */,
 				6792AE7C25E6AC73009358A5 /* Resources */,
 			);
@@ -249,8 +251,9 @@
 		67BD06A025E6C60A0049333D /* Managers */ = {
 			isa = PBXGroup;
 			children = (
-				6792AE8825E6B044009358A5 /* ProgressManager.swift */,
 				6792AE8625E6B018009358A5 /* TimerManager.swift */,
+				6792AE8825E6B044009358A5 /* ProgressManager.swift */,
+				673BF36325ED33BE009F41B5 /* UserSettings.swift */,
 				6759053F25E91DA50013DB97 /* FilterPresentationController.swift */,
 			);
 			path = Managers;
@@ -382,6 +385,7 @@
 				6759053925E90CFB0013DB97 /* Setting.swift in Sources */,
 				6792AE8525E6AF9C009358A5 /* UIView extensions.swift in Sources */,
 				67C0835F25E7E8E500136761 /* Router.swift in Sources */,
+				673BF36425ED33BE009F41B5 /* UserSettings.swift in Sources */,
 				6792AE5C25E6ABF8009358A5 /* TimerViewController.swift in Sources */,
 				6792AE8B25E6B854009358A5 /* AssemblyModuleBuilder.swift in Sources */,
 				6792AE8925E6B044009358A5 /* ProgressManager.swift in Sources */,

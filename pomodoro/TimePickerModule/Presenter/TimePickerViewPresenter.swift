@@ -12,15 +12,24 @@ protocol TimePickerViewProtocol: class {
 }
 
 protocol TimePickerViewPresenterProtocol {
-    init(view: TimePickerViewProtocol, router: RouterProtocol)
+    init(view: TimePickerViewProtocol, router: RouterProtocol, setting: Setting)
+    var setting: Setting! { get set }
+    func saveSetting(fromRow row: Int)
 }
 
 class TimePickerViewPresenter: TimePickerViewPresenterProtocol {
     weak var view: TimePickerViewProtocol!
     var router: RouterProtocol!
+    var setting: Setting!
     
-    required init(view: TimePickerViewProtocol, router: RouterProtocol) {
+    required init(view: TimePickerViewProtocol, router: RouterProtocol, setting: Setting) {
         self.view = view
         self.router = router
+        self.setting = setting
+    }
+    
+    func saveSetting(fromRow row: Int) {
+        let selectedParam = setting.params[row]
+        setting.completionHandler?(selectedParam)
     }
 }

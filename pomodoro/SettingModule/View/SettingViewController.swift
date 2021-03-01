@@ -57,7 +57,6 @@ extension SettingViewController: UITableViewDataSource {
 // MARK: - UITableViewDelegate
 extension SettingViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        guard let setting = presenter.settings?[indexPath.row] else { return }
-        setting.completion?()
+        presenter.showTimePicker(indexPath: indexPath)
     }
 }

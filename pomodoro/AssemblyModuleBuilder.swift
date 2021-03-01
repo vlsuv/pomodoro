@@ -11,13 +11,15 @@ import UIKit
 protocol AssemblyModuleBuilderProtocol {
     func createTimerViewController() -> UIViewController
     func createSettingsViewController(router: RouterProtocol) -> UIViewController
-    func createTimePickerViewController(router: RouterProtocol) -> UIViewController
+    func createTimePickerViewController(router: RouterProtocol, setting: Setting) -> UIViewController
 }
 
 final class AssemblyModuleBuilder: AssemblyModuleBuilderProtocol {
     func createTimerViewController() -> UIViewController {
         let view = TimerViewController()
-        let presenter = TimerViewPresenter(view: view, timerManager: TimerManager(), progressManager: ProgressManager())
+        let progressManager = ProgressManager()
+        let timerManager = TimerManager(progressManager: progressManager)
+        let presenter = TimerViewPresenter(view: view, timerManager: timerManager, progressManager: progressManager)
         view.presenter = presenter
         
         view.tabBarItem.title = "Timer"
@@ -37,9 +39,9 @@ final class AssemblyModuleBuilder: AssemblyModuleBuilderProtocol {
         return view
     }
     
-    func createTimePickerViewController(router: RouterProtocol) -> UIViewController {
+    func createTimePickerViewController(router: RouterProtocol, setting: Setting) -> UIViewController {
         let view = TimePickerViewController()
-        let presenter = TimePickerViewPresenter(view: view, router: router)
+        let presenter = TimePickerViewPresenter(view: view, router: router, setting: setting)
         view.presenter = presenter
         
         return UINavigationController(rootViewController: view)

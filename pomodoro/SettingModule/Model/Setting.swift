@@ -10,5 +10,6 @@ import Foundation
 
 struct Setting {
     var name: String
-    var completion: (() -> ())?
+    var params: [Int]
+    var completionHandler: ((Int) -> ())?
 }

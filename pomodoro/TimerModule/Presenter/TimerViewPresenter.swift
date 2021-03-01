@@ -46,20 +46,12 @@ class TimerViewPresenter: TimerViewPresenterProtocol {
     }
     
     func startTimer() {
-        if timerManager.deactive {
-            timerManager.startTimer()
-            progressManager.progressAnimation(duration: 100)
-            view.changeButtonStatus(isOn: true)
-        } else if timerManager.active {
-            timerManager.pauseTimer()
-            progressManager.pause()
-            view.changeButtonStatus(isOn: false)
-        }
+        timerManager.startTimer()
+        view.changeButtonStatus(isOn: timerManager.active)
     }
     
     func stopTimer() {
         timerManager.stopTimer()
-        progressManager.removeAnimation()
         view.changeButtonStatus(isOn: false)
     }
 }

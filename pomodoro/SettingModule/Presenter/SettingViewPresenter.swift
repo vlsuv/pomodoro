@@ -16,7 +16,7 @@ protocol SettingViewPresenterProtocol {
     init(view: SettingViewProtocol, router: RouterProtocol)
     var settings: [Setting]? { get set }
     func setupSettings()
-    func showTimePicker()
+    func showTimePicker(indexPath: IndexPath)
 }
 
 class SettingViewPresenter: SettingViewPresenterProtocol {
@@ -32,19 +32,21 @@ class SettingViewPresenter: SettingViewPresenterProtocol {
     }
     
     func setupSettings() {
-        let workInterval = Setting(name: "Work Interval") { [weak self] in
-            guard let self = self else { return }
-            self.showTimePicker()
-        }
-        let shortBreak = Setting(name: "Short Break") { [weak self] in
-            guard let self = self else { return }
-            self.showTimePicker()
+        let workInterval = Setting(name: "Work Interval", params: [1500, 1800, 2100, 2400]) { param in
+            print("Work Interval save: \(param)")
+            UserSettings.shared.workInterval = param
         }
         
-        settings = [workInterval, shortBreak]
+        let breakInterval = Setting(name: "Break Interval", params: [300, 600]) { param in
+            print("Break Interval save: \(param)")
+            UserSettings.shared.breakInterval = param
+        }
+        
+        settings = [workInterval, breakInterval]
     }
     
-    func showTimePicker() {
-        router.showTimePickerViewController()
+    func showTimePicker(indexPath: IndexPath) {
+        guard let setting = settings?[indexPath.row] else { return }
+        router.showTimePickerViewController(withSetting: setting)
     }
 }

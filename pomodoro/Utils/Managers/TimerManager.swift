@@ -20,8 +20,15 @@ protocol TimerManagerProtocol: class {
 class TimerManager: TimerManagerProtocol {
     private var timer: Timer?
     private var endDate: Date?
-    private var secondsLeft: TimeInterval = 100
+    private var secondsLeft: TimeInterval!
     var timerCompletionHandler: ((Double) -> ())?
+    
+    let progressManager: ProgressManagerProtocol
+    
+    init(progressManager: ProgressManagerProtocol) {
+        self.progressManager = progressManager
+        self.secondsLeft = Double(UserSettings.shared.workInterval)
+    }
     
     var active: Bool {
         return timer != nil && endDate != nil
@@ -38,24 +45,34 @@ class TimerManager: TimerManagerProtocol {
             stopTimer()
         }
         
-        timerCompletionHandler?(Double(secondsLeft))
+        timerCompletionHandler?(secondsLeft)
     }
     
     func startTimer() {
-        timer = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(timerTick), userInfo: nil, repeats: true)
-        endDate = Date().addingTimeInterval(secondsLeft)
+        if deactive {
+            progressManager.progressAnimation(duration: Double(UserSettings.shared.workInterval))
+            
+            timer = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(timerTick), userInfo: nil, repeats: true)
+            endDate = Date().addingTimeInterval(secondsLeft)
+        } else if active {
+            pauseTimer()
+        }
     }
     
     func pauseTimer() {
+        progressManager.pause()
+        
         timer?.invalidate()
         endDate = nil
     }
     
     func stopTimer() {
+        progressManager.removeAnimation()
+        
         timer?.invalidate()
         timer = nil
         endDate = nil
-        secondsLeft = 100
+        secondsLeft = Double(UserSettings.shared.workInterval)
         
         timerCompletionHandler?(Double(secondsLeft))
     }
