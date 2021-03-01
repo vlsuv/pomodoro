@@ -23,10 +23,15 @@ class TimePickerViewController: UIViewController {
         configurePickerView()
     }
     
+    // MARK: - Actions
+    @objc private func handleCancel() {
+        dismiss(animated: true)
+    }
+    
     // MARK: - Handlers
     private func configureNavigationController() {
         let saveButton = UIBarButtonItem(title: "Save", style: .done, target: self, action: nil)
-        let cancelButton = UIBarButtonItem(title: "Cancel", style: .plain, target: self, action: nil)
+        let cancelButton = UIBarButtonItem(title: "Cancel", style: .plain, target: self, action: #selector(handleCancel))
         
         navigationItem.leftBarButtonItem = saveButton
         navigationItem.rightBarButtonItem = cancelButton

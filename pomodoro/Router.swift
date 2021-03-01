@@ -35,8 +35,11 @@ class Router: RouterProtocol {
     }
     
     func showTimePickerViewController() {
-        guard let tabBarController = tabBarController, let settingViewController = tabBarController.viewControllers?[1] as? SettingViewController, let timePickerViewController = assemblyModuleBuilder?.createTimePickerViewController(router: self, viewController: settingViewController) else { return }
+        guard let tabBarController = tabBarController, let timePickerViewController = assemblyModuleBuilder?.createTimePickerViewController(router: self) else { return }
         
-        settingViewController.present(timePickerViewController, animated: true, completion: nil)
+        timePickerViewController.modalPresentationStyle = .custom
+        timePickerViewController.transitioningDelegate = tabBarController
+        
+        tabBarController.present(timePickerViewController, animated: true, completion: nil)
     }
 }

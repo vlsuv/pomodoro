@@ -61,10 +61,3 @@ extension SettingViewController: UITableViewDelegate {
         setting.completion?()
     }
 }
-
-// MARK: - UIViewControllerTransitioningDelegate
-extension SettingViewController: UIViewControllerTransitioningDelegate {
-    func presentationController(forPresented presented: UIViewController, presenting: UIViewController?, source: UIViewController) -> UIPresentationController? {
-        FilterPresentationController(presentedViewController: presented, presenting: presenting)
-    }
-}
