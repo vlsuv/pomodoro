@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import Foundation
 
 protocol TimerViewProtocol {
     func update(time: String)
@@ -37,7 +38,8 @@ class TimerViewPresenter: TimerViewPresenterProtocol {
     func configureTimerManager() {
         timerManager.timerCompletionHandler = { [weak self] time in
             guard let self = self else { return }
-            self.view.update(time: String(time))
+            let time = Int(time)
+            self.view.update(time: time.toString())
         }
     }
     

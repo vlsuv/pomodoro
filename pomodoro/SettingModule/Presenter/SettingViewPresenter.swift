@@ -33,12 +33,10 @@ class SettingViewPresenter: SettingViewPresenterProtocol {
     
     func setupSettings() {
         let workInterval = Setting(name: "Work Interval", params: [1500, 1800, 2100, 2400]) { param in
-            print("Work Interval save: \(param)")
             UserSettings.shared.workInterval = param
         }
         
         let breakInterval = Setting(name: "Break Interval", params: [300, 600]) { param in
-            print("Break Interval save: \(param)")
             UserSettings.shared.breakInterval = param
         }
         

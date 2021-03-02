@@ -15,6 +15,7 @@ class TimerViewController: UIViewController {
         let label = UILabel()
         label.font = .systemFont(ofSize: 46, weight: .medium)
         label.textColor = Colors.darkGray
+        label.text = "25:00"
         return label
     }()
     let startButton: UIButton = {
@@ -51,7 +52,6 @@ class TimerViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = Colors.white
-        timeLabel.text = "\(100)"
         
         setupTimeLabel()
         setupTimeButtons()

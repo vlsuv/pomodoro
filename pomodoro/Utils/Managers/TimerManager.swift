@@ -23,11 +23,19 @@ class TimerManager: TimerManagerProtocol {
     private var secondsLeft: TimeInterval!
     var timerCompletionHandler: ((Double) -> ())?
     
+    lazy var workInterval: Double = {
+        return Double(UserSettings.shared.workInterval)
+    }()
+    lazy var breakInterval: Double = {
+        return Double(UserSettings.shared.breakInterval)
+    }()
+    
+    var breakStatus: Bool = false
     let progressManager: ProgressManagerProtocol
     
     init(progressManager: ProgressManagerProtocol) {
         self.progressManager = progressManager
-        self.secondsLeft = Double(UserSettings.shared.workInterval)
+        self.secondsLeft = workInterval
     }
     
     var active: Bool {
@@ -42,6 +50,7 @@ class TimerManager: TimerManagerProtocol {
         secondsLeft -= 1
         
         if secondsLeft == 0 {
+            breakStatus = true
             stopTimer()
         }
         
@@ -50,7 +59,7 @@ class TimerManager: TimerManagerProtocol {
     
     func startTimer() {
         if deactive {
-            progressManager.progressAnimation(duration: Double(UserSettings.shared.workInterval))
+            progressManager.progressAnimation(duration: workInterval)
             
             timer = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(timerTick), userInfo: nil, repeats: true)
             endDate = Date().addingTimeInterval(secondsLeft)
@@ -72,7 +81,14 @@ class TimerManager: TimerManagerProtocol {
         timer?.invalidate()
         timer = nil
         endDate = nil
-        secondsLeft = Double(UserSettings.shared.workInterval)
+        
+        if breakStatus {
+            secondsLeft = breakInterval
+            breakStatus = false
+        } else {
+            secondsLeft = workInterval
+        }
+        
         
         timerCompletionHandler?(Double(secondsLeft))
     }

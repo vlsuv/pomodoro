@@ -21,29 +21,33 @@ final class AssemblyModuleBuilder: AssemblyModuleBuilderProtocol {
         let timerManager = TimerManager(progressManager: progressManager)
         let presenter = TimerViewPresenter(view: view, timerManager: timerManager, progressManager: progressManager)
         view.presenter = presenter
-        
-        view.tabBarItem.title = "Timer"
-        view.tabBarItem.image = UIImage(systemName: "clock")
-        
-        return view
+        let navController = createNavController(rootViewController: view, title: "Timer", image: Images.clock)
+        return navController
     }
     
     func createSettingsViewController(router: RouterProtocol) -> UIViewController {
         let view = SettingViewController()
         let presenter = SettingViewPresenter(view: view, router: router)
         view.presenter = presenter
-        
-        view.tabBarItem.title = "Settings"
-        view.tabBarItem.image = UIImage(systemName: "gear")
-        
-        return view
+        let navController = createNavController(rootViewController: view, title: "Settings", image: Images.settings)
+        return navController
     }
     
     func createTimePickerViewController(router: RouterProtocol, setting: Setting) -> UIViewController {
         let view = TimePickerViewController()
         let presenter = TimePickerViewPresenter(view: view, router: router, setting: setting)
         view.presenter = presenter
-        
         return UINavigationController(rootViewController: view)
+    }
+}
+
+extension AssemblyModuleBuilder {
+    private func createNavController(rootViewController: UIViewController, title: String, image: UIImage) -> UINavigationController {
+        let navController = UINavigationController(rootViewController: rootViewController)
+        navController.tabBarItem.title = title
+        navController.tabBarItem.image = image
+        navController.navigationBar.prefersLargeTitles = true
+        rootViewController.navigationItem.title = title
+        return navController
     }
 }
