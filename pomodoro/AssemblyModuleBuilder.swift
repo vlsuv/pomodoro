@@ -17,9 +17,8 @@ protocol AssemblyModuleBuilderProtocol {
 final class AssemblyModuleBuilder: AssemblyModuleBuilderProtocol {
     func createTimerViewController() -> UIViewController {
         let view = TimerViewController()
-        let progressManager = ProgressManager()
-        let timerManager = TimerManager(progressManager: progressManager)
-        let presenter = TimerViewPresenter(view: view, timerManager: timerManager, progressManager: progressManager)
+        let timerManager = TimerManager()
+        let presenter = TimerViewPresenter(view: view, timerManager: timerManager)
         view.presenter = presenter
         let navController = createNavController(rootViewController: view, title: "Timer", image: Images.clock)
         return navController

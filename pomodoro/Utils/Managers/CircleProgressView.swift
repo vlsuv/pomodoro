@@ -1,23 +1,17 @@
 //
-//  CircularProgressView.swift
+//  CircleProgressView.swift
 //  pomodoro
 //
-//  Created by vlsuv on 24.02.2021.
+//  Created by vlsuv on 08.07.2021.
 //  Copyright © 2021 vlsuv. All rights reserved.
 //
 
 import UIKit
 
-protocol ProgressManagerProtocol: class {
-    var progressView: UIView { get set }
-    func progressAnimation(duration: TimeInterval)
-    func pause()
-    func resume()
-    func removeAnimation()
-}
-
-class ProgressManager: ProgressManagerProtocol {
-    var progressView: UIView = UIView()
+class CircleProgressView: UIView {
+    
+    // MARK: - Properties
+//    var progressView: UIView = UIView()
     private var circleLayer = CAShapeLayer()
     private var progressLayer = CAShapeLayer()
     
@@ -25,12 +19,19 @@ class ProgressManager: ProgressManagerProtocol {
         static let progressAnimation = "progressAnimation"
     }
     
-    init() {
+    // MARK: - Init
+    override init(frame: CGRect) {
+        super.init(frame: frame)
         createCircularPath()
     }
     
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    // MARK: - Configures
     func createCircularPath() {
-        let circularPath = UIBezierPath(arcCenter: CGPoint(x: progressView.frame.size.width / 2.0, y: progressView.frame.size.height / 2.0), radius: 120, startAngle: -.pi / 2, endAngle: 3 * .pi / 2, clockwise: true)
+        let circularPath = UIBezierPath(arcCenter: CGPoint(x: self.frame.size.width / 2.0, y: self.frame.size.height / 2.0), radius: 120, startAngle: -.pi / 2, endAngle: 3 * .pi / 2, clockwise: true)
         
         circleLayer.path = circularPath.cgPath
         circleLayer.fillColor = UIColor.clear.cgColor
@@ -45,8 +46,8 @@ class ProgressManager: ProgressManagerProtocol {
         progressLayer.strokeEnd = 0
         progressLayer.strokeColor = Colors.baseRed.cgColor
         
-        progressView.layer.addSublayer(circleLayer)
-        progressView.layer.addSublayer(progressLayer)
+        self.layer.addSublayer(circleLayer)
+        self.layer.addSublayer(progressLayer)
     }
     
     func progressAnimation(duration: TimeInterval) {

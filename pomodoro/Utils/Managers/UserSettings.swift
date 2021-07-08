@@ -16,6 +16,7 @@ final class UserSettings {
     private enum settingKeys: String {
         case workInterval
         case breakInterval
+        case endDate
     }
     
     var workInterval: Int {
@@ -36,6 +37,18 @@ final class UserSettings {
         set {
             let defaults = UserDefaults.standard
             let key = settingKeys.breakInterval.rawValue
+            defaults.set(newValue, forKey: key)
+        }
+    }
+    
+    var endDate: Date? {
+        get {
+            guard let date = UserDefaults.standard.value(forKey: settingKeys.endDate.rawValue) as? Date else { return nil }
+            return date
+        }
+        set {
+            let defaults = UserDefaults.standard
+            let key = settingKeys.endDate.rawValue
             defaults.set(newValue, forKey: key)
         }
     }

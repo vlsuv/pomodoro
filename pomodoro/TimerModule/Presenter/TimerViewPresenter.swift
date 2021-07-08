@@ -7,53 +7,49 @@
 //
 
 import UIKit
-import Foundation
 
 protocol TimerViewProtocol {
-    func update(time: String)
-    func changeButtonStatus(isOn: Bool)
-    func setupProgressView(_ progressView: UIView)
+    func updateTimerLabel(with time: String)
+    func updateTimerState(_ state: TimerState)
 }
 
 protocol TimerViewPresenterProtocol {
-    init(view: TimerViewProtocol, timerManager: TimerManagerProtocol, progressManager: ProgressManagerProtocol)
+    init(view: TimerViewProtocol, timerManager: TimerManagerProtocol)
     func startTimer()
     func stopTimer()
 }
 
 class TimerViewPresenter: TimerViewPresenterProtocol {
-    var view: TimerViewProtocol!
-    var timerManager: TimerManagerProtocol!
-    var progressManager: ProgressManagerProtocol!
     
-    required init(view: TimerViewProtocol, timerManager: TimerManagerProtocol, progressManager: ProgressManagerProtocol) {
+    // MARK: - Properties
+    let view: TimerViewProtocol
+    
+    let timerManager: TimerManagerProtocol
+    
+    required init(view: TimerViewProtocol, timerManager: TimerManagerProtocol) {
         self.view = view
         self.timerManager = timerManager
-        self.progressManager = progressManager
         
-        configureTimerManager()
-        configureCircularProgressView()
+        timerManager.delegate = self
     }
     
-    func configureTimerManager() {
-        timerManager.timerCompletionHandler = { [weak self] time in
-            guard let self = self else { return }
-            let time = Int(time)
-            self.view.update(time: time.toString())
-        }
-    }
-    
-    func configureCircularProgressView() {
-        view.setupProgressView(progressManager.progressView)
-    }
-    
+    // MARK: - Timer Handlers
     func startTimer() {
         timerManager.startTimer()
-        view.changeButtonStatus(isOn: timerManager.active)
     }
     
     func stopTimer() {
         timerManager.stopTimer()
-        view.changeButtonStatus(isOn: false)
+    }
+}
+
+// MARK: - TimerManagerDelegate
+extension TimerViewPresenter: TimerManagerDelegate {
+    func didChangeTimerState(_ state: TimerState) {
+        view.updateTimerState(state)
+    }
+    
+    func didChangeTime(_ timeString: String) {
+        view.updateTimerLabel(with: timeString)
     }
 }

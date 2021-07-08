@@ -18,6 +18,7 @@ class TimerViewController: UIViewController {
         label.text = "25:00"
         return label
     }()
+    
     let startButton: UIButton = {
         let button = UIButton()
         let normalAttributedString = NSAttributedString(string: "Start", attributes: [
@@ -34,6 +35,7 @@ class TimerViewController: UIViewController {
         button.addTarget(self, action: #selector(handleStartTimer), for: .touchUpInside)
         return button
     }()
+    
     let stopButton: UIButton = {
         let button = UIButton()
         let normalAttributedString = NSAttributedString(string: "Stop", attributes: [
@@ -46,6 +48,11 @@ class TimerViewController: UIViewController {
         return button
     }()
     
+    var circleProgressView: CircleProgressView = {
+        let progressView = CircleProgressView()
+        return progressView
+    }()
+    
     var presenter: TimerViewPresenterProtocol!
 
     // MARK: - Init
@@ -55,9 +62,10 @@ class TimerViewController: UIViewController {
         
         setupTimeLabel()
         setupTimeButtons()
+        configureProgressView()
     }
     
-    // MARK: - Actions
+    // MARK: - Targets
     @objc private func handleStartTimer() {
         presenter.startTimer()
     }
@@ -66,7 +74,7 @@ class TimerViewController: UIViewController {
         presenter.stopTimer()
     }
     
-    // MARK: - Handlers
+    // MARK: - Configures
     private func setupTimeLabel() {
         view.addSubview(timeLabel)
         timeLabel.translatesAutoresizingMaskIntoConstraints = false
@@ -87,21 +95,40 @@ class TimerViewController: UIViewController {
         stopButton.layer.cornerRadius = 6
         stopButton.isHidden = true
     }
+    
+    private func configureProgressView() {
+        view.addSubview(circleProgressView)
+        circleProgressView.center = view.center
+    }
 }
 
 // MARK: - TimerViewProtocol
 extension TimerViewController: TimerViewProtocol {
-    func update(time: String) {
+    func updateTimerState(_ state: TimerState) {
+        switch state {
+        case .start(time: let time):
+            circleProgressView.progressAnimation(duration: time)
+            changeButtonStatus(isOn: true)
+        case .resume:
+            circleProgressView.resume()
+            changeButtonStatus(isOn: true)
+        case .pause:
+            circleProgressView.pause()
+            changeButtonStatus(isOn: false)
+        case .stop:
+            circleProgressView.removeAnimation()
+            changeButtonStatus(isOn: false)
+        }
+    }
+    
+    func updateTimerLabel(with time: String) {
         timeLabel.text = time
     }
-    
-    func changeButtonStatus(isOn: Bool) {
+}
+
+extension TimerViewController {
+    private func changeButtonStatus(isOn: Bool) {
         self.stopButton.isHidden = !isOn
         self.startButton.isSelected = isOn
-    }
-    
-    func setupProgressView(_ progressView: UIView) {
-        progressView.center = view.center
-        view.addSubview(progressView)
     }
 }
