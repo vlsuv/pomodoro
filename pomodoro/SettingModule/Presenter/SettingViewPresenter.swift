@@ -9,7 +9,7 @@
 import UIKit
 
 protocol SettingViewProtocol: class {
-    
+    func update()
 }
 
 protocol SettingViewPresenterProtocol {
@@ -20,31 +20,63 @@ protocol SettingViewPresenterProtocol {
 }
 
 class SettingViewPresenter: SettingViewPresenterProtocol {
+    
+    // MARK: - Properties
     weak var view: SettingViewProtocol!
+    
     var router: RouterProtocol!
+    
     var settings: [Setting]?
     
+    // MARK: - Init
     required init(view: SettingViewProtocol, router: RouterProtocol) {
         self.view = view
         self.router = router
         
         setupSettings()
+        configureObservers()
     }
     
+    // MARK: - Configures
     func setupSettings() {
-        let workInterval = Setting(name: "Work Interval", params: [1500, 1800, 2100, 2400]) { param in
+        let workInterval = Setting(name: "Work Interval",
+                                   params: Array(1...60),
+                                   selectedParam: { () -> (Int) in
+                                    return UserSettings.shared.workInterval
+        }) { param in
             UserSettings.shared.workInterval = param
         }
         
-        let breakInterval = Setting(name: "Break Interval", params: [300, 600]) { param in
+        
+        let breakInterval = Setting(name: "Short Break",
+                                    params: Array(1...30),
+                                    selectedParam: { () -> (Int) in
+                                        return UserSettings.shared.breakInterval
+        }) { param in
             UserSettings.shared.breakInterval = param
         }
         
-        settings = [workInterval, breakInterval]
+        let longBreakInterval = Setting(name: "Long Break",
+                                        params: Array(1...60),
+                                        selectedParam: { () -> (Int) in
+                                            return UserSettings.shared.longBreakInterval
+        }) { param in
+            UserSettings.shared.longBreakInterval = param
+        }
+        
+        settings = [workInterval, breakInterval, longBreakInterval]
     }
     
+    private func configureObservers() {
+        NotificationCenter.default.addObserver(forName: .didUpdateTimerSettings, object: nil, queue: nil) { [weak self] _ in
+            self?.view.update()
+        }
+    }
+    
+    // MARK - Input Handlers
     func showTimePicker(indexPath: IndexPath) {
         guard let setting = settings?[indexPath.row] else { return }
+        
         router.showTimePickerViewController(withSetting: setting)
     }
 }

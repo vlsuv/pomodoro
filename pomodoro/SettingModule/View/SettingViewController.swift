@@ -11,8 +11,14 @@ import UIKit
 class SettingViewController: UIViewController {
     
     // MARK: - Properties
-    private var tableView: UITableView!
-    var presenter: SettingViewPresenterProtocol!
+    private var tableView: UITableView = {
+        let tableView = UITableView(frame: .zero, style: .grouped)
+        tableView.backgroundColor = Colors.white
+        tableView.isScrollEnabled = false
+        return tableView
+    }()
+    
+    var presenter: SettingViewPresenterProtocol?
     
     // MARK: - Init
     override func viewDidLoad() {
@@ -22,13 +28,12 @@ class SettingViewController: UIViewController {
         configureTableView()
     }
     
-    // MARK: - Handlers
+    // MARK: - Configures
     private func configureTableView() {
-        tableView = UITableView(frame: .zero, style: .grouped)
         tableView.dataSource = self
         tableView.delegate = self
         
-        tableView.register(UITableViewCell.self, forCellReuseIdentifier: "cell")
+        tableView.register(TimeSettingCell.self, forCellReuseIdentifier: TimeSettingCell.identifier)
         
         view.addSubview(tableView)
         tableView.anchor(top: view.safeAreaLayoutGuide.topAnchor, left: view.leftAnchor, right: view.rightAnchor, bottom: view.bottomAnchor)
@@ -37,19 +42,24 @@ class SettingViewController: UIViewController {
 
 // MARK: - SettingViewProtocol
 extension SettingViewController: SettingViewProtocol {
+    func update() {
+        tableView.reloadData()
+    }
 }
 
 // MARK: - UITableViewDataSource
 extension SettingViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return presenter.settings?.count ?? 0
+        return presenter?.settings?.count ?? 0
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
-        if let setting = presenter.settings?[indexPath.row] {
-            cell.textLabel?.text = setting.name
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: TimeSettingCell.identifier, for: indexPath) as? TimeSettingCell else { return UITableViewCell() }
+        
+        if let setting = presenter?.settings?[indexPath.row] {
+            cell.configure(setting)
         }
+        
         return cell
     }
 }
@@ -57,6 +67,12 @@ extension SettingViewController: UITableViewDataSource {
 // MARK: - UITableViewDelegate
 extension SettingViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        presenter.showTimePicker(indexPath: indexPath)
+        tableView.deselectRow(at: indexPath, animated: true)
+        
+        presenter?.showTimePicker(indexPath: indexPath)
+    }
+    
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return 46
     }
 }

@@ -12,6 +12,7 @@ class TimePickerViewController: UIViewController {
     
     // MARK: - Properties
     var pickerView: UIPickerView!
+    
     var presenter: TimePickerViewPresenterProtocol!
     
     // MARK: - Init
@@ -21,12 +22,15 @@ class TimePickerViewController: UIViewController {
         
         configureNavigationController()
         configurePickerView()
+        
+        presenter.getSelectedParam()
     }
     
     // MARK: - Actions
     @objc private func handleSave() {
         let selectedRow = pickerView.selectedRow(inComponent: 0)
         presenter.saveSetting(fromRow: selectedRow)
+        NotificationCenter.default.post(name: .didUpdateTimerSettings, object: nil)
         dismiss(animated: true)
     }
     
@@ -39,8 +43,8 @@ class TimePickerViewController: UIViewController {
         let saveButton = UIBarButtonItem(title: "Save", style: .done, target: self, action: #selector(handleSave))
         let cancelButton = UIBarButtonItem(title: "Cancel", style: .plain, target: self, action: #selector(handleCancel))
         
-        navigationItem.leftBarButtonItem = saveButton
-        navigationItem.rightBarButtonItem = cancelButton
+        navigationItem.leftBarButtonItem = cancelButton
+        navigationItem.rightBarButtonItem = saveButton
         
         navigationController?.navigationBar.tintColor = Colors.baseRed
     }
@@ -57,7 +61,9 @@ class TimePickerViewController: UIViewController {
 
 // MARK: - TimePickerViewProtocol
 extension TimePickerViewController: TimePickerViewProtocol {
-    
+    func setParam(at index: Int) {
+        pickerView.selectRow(index, inComponent: 0, animated: false)
+    }
 }
 
 // MARK: - UIPickerViewDataSource
@@ -73,13 +79,12 @@ extension TimePickerViewController: UIPickerViewDataSource {
     
     func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
         let option = presenter.setting.params[row]
-        return "\(option / 60) min"
+        return "\(option) min"
     }
 }
 
 // MARK: - UIPickerViewDelegate
 extension TimePickerViewController: UIPickerViewDelegate {
-    
 }
 
 

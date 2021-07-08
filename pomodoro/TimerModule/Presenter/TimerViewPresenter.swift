@@ -14,7 +14,7 @@ protocol TimerViewProtocol {
 }
 
 protocol TimerViewPresenterProtocol {
-    init(view: TimerViewProtocol, timerManager: TimerManagerProtocol)
+    init(view: TimerViewProtocol)
     func startTimer()
     func stopTimer()
 }
@@ -24,22 +24,26 @@ class TimerViewPresenter: TimerViewPresenterProtocol {
     // MARK: - Properties
     let view: TimerViewProtocol
     
-    let timerManager: TimerManagerProtocol
+    var timerManager: TimerManagerProtocol?
     
-    required init(view: TimerViewProtocol, timerManager: TimerManagerProtocol) {
+    required init(view: TimerViewProtocol) {
         self.view = view
-        self.timerManager = timerManager
+        self.timerManager = TimerManager()
         
-        timerManager.delegate = self
+        timerManager?.delegate = self
+        
+        if let time = timerManager?.getSecondsLeft() {
+            view.updateTimerLabel(with: time)
+        }
     }
     
     // MARK: - Timer Handlers
     func startTimer() {
-        timerManager.startTimer()
+        timerManager?.startTimer()
     }
     
     func stopTimer() {
-        timerManager.stopTimer()
+        timerManager?.stopTimer()
     }
 }
 

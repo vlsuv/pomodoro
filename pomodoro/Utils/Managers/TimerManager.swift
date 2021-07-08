@@ -26,6 +26,8 @@ protocol TimerManagerProtocol: class {
     func startTimer()
     func pauseTimer()
     func stopTimer()
+    
+    func getSecondsLeft() -> String
 }
 
 class TimerManager: TimerManagerProtocol {
@@ -52,15 +54,17 @@ class TimerManager: TimerManagerProtocol {
     }
     
     // MARK: - UserDefaults Properties
-    lazy var workInterval: Double = {
-        return Double(UserSettings.shared.workInterval)
-    }()
+    private var workInterval: Double {
+        return Double(UserSettings.shared.workInterval) * 60
+    }
     
-    lazy var breakInterval: Double = {
-        return Double(UserSettings.shared.breakInterval)
-    }()
+    private var breakInterval: Double {
+        return Double(UserSettings.shared.breakInterval) * 60
+    }
     
-    var longBreakInterval: Double?
+    private var longBreakInterval: Double {
+        return Double(UserSettings.shared.longBreakInterval) * 60
+    }
     
     // MARK: - Init
     init() {
@@ -158,6 +162,11 @@ extension TimerManager {
 
 // MARK: - Date Helpers
 extension TimerManager {
+    func getSecondsLeft() -> String {
+        let time = intervalToString(ti: Int(secondsLeft))
+        return time
+    }
+    
     func intervalToString(ti: NSInteger) -> String {
         let seconds = ti % 60
         let minutes = (ti / 60) % 60

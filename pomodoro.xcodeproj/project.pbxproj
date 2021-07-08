@@ -26,10 +26,11 @@
 		6792AE8525E6AF9C009358A5 /* UIView extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6792AE8425E6AF9C009358A5 /* UIView extensions.swift */; };
 		6792AE8725E6B018009358A5 /* TimerManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6792AE8625E6B018009358A5 /* TimerManager.swift */; };
 		6792AE8B25E6B854009358A5 /* AssemblyModuleBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6792AE8A25E6B854009358A5 /* AssemblyModuleBuilder.swift */; };
-		67A7BB2F25EE535E003BC33B /* Integer extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67A7BB2E25EE535E003BC33B /* Integer extensions.swift */; };
 		67A7BB3125EE62CC003BC33B /* MainTabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67A7BB3025EE62CC003BC33B /* MainTabBarController.swift */; };
 		67A7BB3325EE64D8003BC33B /* Images.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67A7BB3225EE64D8003BC33B /* Images.swift */; };
 		67B3A7892696D96200458176 /* CircleProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67B3A7882696D96200458176 /* CircleProgressView.swift */; };
+		67B3A78B26970ECD00458176 /* TimeSettingCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67B3A78A26970ECD00458176 /* TimeSettingCell.swift */; };
+		67B3A78D2697218E00458176 /* NotificationCenter extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67B3A78C2697218E00458176 /* NotificationCenter extensions.swift */; };
 		67BD06A325E6C68D0049333D /* Timer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67BD06A225E6C68D0049333D /* Timer.swift */; };
 		67C0835F25E7E8E500136761 /* Router.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67C0835E25E7E8E500136761 /* Router.swift */; };
 		67C0836225E7F3EA00136761 /* Colors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67C0836125E7F3EA00136761 /* Colors.swift */; };
@@ -69,10 +70,11 @@
 		6792AE8425E6AF9C009358A5 /* UIView extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView extensions.swift"; sourceTree = "<group>"; };
 		6792AE8625E6B018009358A5 /* TimerManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimerManager.swift; sourceTree = "<group>"; };
 		6792AE8A25E6B854009358A5 /* AssemblyModuleBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssemblyModuleBuilder.swift; sourceTree = "<group>"; };
-		67A7BB2E25EE535E003BC33B /* Integer extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Integer extensions.swift"; sourceTree = "<group>"; };
 		67A7BB3025EE62CC003BC33B /* MainTabBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainTabBarController.swift; sourceTree = "<group>"; };
 		67A7BB3225EE64D8003BC33B /* Images.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Images.swift; sourceTree = "<group>"; };
 		67B3A7882696D96200458176 /* CircleProgressView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CircleProgressView.swift; sourceTree = "<group>"; };
+		67B3A78A26970ECD00458176 /* TimeSettingCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeSettingCell.swift; sourceTree = "<group>"; };
+		67B3A78C2697218E00458176 /* NotificationCenter extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NotificationCenter extensions.swift"; sourceTree = "<group>"; };
 		67BD06A225E6C68D0049333D /* Timer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Timer.swift; sourceTree = "<group>"; };
 		67C0835E25E7E8E500136761 /* Router.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Router.swift; sourceTree = "<group>"; };
 		67C0836125E7F3EA00136761 /* Colors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Colors.swift; sourceTree = "<group>"; };
@@ -110,6 +112,7 @@
 			isa = PBXGroup;
 			children = (
 				673309EE25E7F90900EEB1E3 /* SettingViewController.swift */,
+				67B3A78A26970ECD00458176 /* TimeSettingCell.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -251,7 +254,7 @@
 			children = (
 				6792AE8425E6AF9C009358A5 /* UIView extensions.swift */,
 				673BF36125ED29F0009F41B5 /* UITabBarController extensions.swift */,
-				67A7BB2E25EE535E003BC33B /* Integer extensions.swift */,
+				67B3A78C2697218E00458176 /* NotificationCenter extensions.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -387,11 +390,12 @@
 			files = (
 				6759053E25E918F60013DB97 /* TimePickerViewController.swift in Sources */,
 				6792AE8125E6AEFB009358A5 /* TimerViewPresenter.swift in Sources */,
+				67B3A78B26970ECD00458176 /* TimeSettingCell.swift in Sources */,
 				67C0836225E7F3EA00136761 /* Colors.swift in Sources */,
+				67B3A78D2697218E00458176 /* NotificationCenter extensions.swift in Sources */,
 				67A7BB3325EE64D8003BC33B /* Images.swift in Sources */,
 				673309ED25E7F84100EEB1E3 /* SettingViewPresenter.swift in Sources */,
 				6759054025E91DA50013DB97 /* FilterPresentationController.swift in Sources */,
-				67A7BB2F25EE535E003BC33B /* Integer extensions.swift in Sources */,
 				673309EF25E7F90900EEB1E3 /* SettingViewController.swift in Sources */,
 				6759053925E90CFB0013DB97 /* Setting.swift in Sources */,
 				6792AE8525E6AF9C009358A5 /* UIView extensions.swift in Sources */,
