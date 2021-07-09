@@ -17,7 +17,10 @@ final class UserSettings {
         case workInterval
         case breakInterval
         case longBreakInterval
+        
         case endDate
+        case pomodoroStep
+        case needBreak
     }
     
     var workInterval: Int {
@@ -42,6 +45,17 @@ final class UserSettings {
         }
     }
     
+    var longBreakInterval: Int {
+        get {
+            return UserDefaults.standard.integer(forKey: settingKeys.longBreakInterval.rawValue)
+        }
+        set {
+            let defaults = UserDefaults.standard
+            let key = settingKeys.longBreakInterval.rawValue
+            defaults.set(newValue, forKey: key)
+        }
+    }
+    
     var endDate: Date? {
         get {
             guard let date = UserDefaults.standard.value(forKey: settingKeys.endDate.rawValue) as? Date else { return nil }
@@ -54,13 +68,24 @@ final class UserSettings {
         }
     }
     
-    var longBreakInterval: Int {
+    var pomodoroStep: Int? {
         get {
-            return UserDefaults.standard.integer(forKey: settingKeys.longBreakInterval.rawValue)
+            return UserDefaults.standard.integer(forKey: settingKeys.pomodoroStep.rawValue)
         }
         set {
             let defaults = UserDefaults.standard
-            let key = settingKeys.longBreakInterval.rawValue
+            let key = settingKeys.pomodoroStep.rawValue
+            defaults.set(newValue, forKey: key)
+        }
+    }
+    
+    var needBreak: Bool? {
+        get {
+            return UserDefaults.standard.bool(forKey: settingKeys.needBreak.rawValue)
+        }
+        set {
+            let defaults = UserDefaults.standard
+            let key = settingKeys.needBreak.rawValue
             defaults.set(newValue, forKey: key)
         }
     }

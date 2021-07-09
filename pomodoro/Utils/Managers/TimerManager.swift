@@ -15,19 +15,37 @@ enum TimerState {
     case stop
 }
 
+enum BreakType {
+    case work
+    case shortBreak
+    case longBreak
+    
+    var title: String {
+        switch self {
+        case .work:
+            return "Work"
+        case .shortBreak:
+            return "Short Break"
+        case .longBreak:
+            return "Long Break"
+        }
+    }
+}
+
 protocol TimerManagerDelegate {
     func didChangeTimerState(_ state: TimerState)
     func didChangeTime(_ timeString: String)
+    func didChangeTimerType(_ type: BreakType)
+    func didChangePassedSteps(_ step: Int)
 }
 
 protocol TimerManagerProtocol: class {
     var delegate: TimerManagerDelegate? { get set }
     
     func startTimer()
-    func pauseTimer()
     func stopTimer()
     
-    func getSecondsLeft() -> String
+    func secondsLeftText() -> String
 }
 
 class TimerManager: TimerManagerProtocol {
@@ -47,11 +65,7 @@ class TimerManager: TimerManagerProtocol {
         }
     }
     
-    var state: TimerState = .stop {
-        didSet {
-            delegate?.didChangeTimerState(state)
-        }
-    }
+    private var timerState: TimerState = .stop
     
     // MARK: - UserDefaults Properties
     private var workInterval: Double {
@@ -66,14 +80,26 @@ class TimerManager: TimerManagerProtocol {
         return Double(UserSettings.shared.longBreakInterval) * 60
     }
     
-    // MARK: - Init
-    init() {
-        secondsLeft = workInterval
-        
-        configureNotificationCenterObserve()
+    // MARK: - Steps Properties
+    private var maxSteps: Int = 4
+    
+    private var passedSteps: Int = 0
+    
+    private var nowBreak: Bool = false
+    
+    private var breakType: BreakType {
+        if nowBreak {
+            if passedSteps == maxSteps {
+                return .longBreak
+            } else {
+                return .shortBreak
+            }
+        } else {
+            return .work
+        }
     }
     
-    // MARK: - Status
+    // MARK: - Active Properties
     private var firstActive: Bool {
         return timer == nil && endDate == nil
     }
@@ -86,88 +112,148 @@ class TimerManager: TimerManagerProtocol {
         return timer == nil || (timer != nil && endDate == nil)
     }
     
-    // MARK: - Manage
-    @objc func timerTick() {
-        secondsLeft -= 1
+    // MARK: - Init
+    init() {
+        secondsLeft = workInterval
         
-        if secondsLeft == 0 {
-            stopTimer()
-        }
+        configureNotificationCenterObserve()
     }
     
+    // MARK: - Inputs Timer Manage
     func startTimer() {
-        if deactive {
-            if firstActive {
-                state = .start(time: secondsLeft)
-            } else {
-                state = .resume
-            }
-            
-            timer = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(timerTick), userInfo: nil, repeats: true)
-            endDate = Date().addingTimeInterval(secondsLeft)
-        } else if active {
+        guard deactive else {
             pauseTimer()
+            return
         }
-    }
-    
-    func pauseTimer() {
-        timer?.invalidate()
-        endDate = nil
-        state = .pause
+        
+        if firstActive {
+            timerState = .start(time: secondsLeft)
+        } else {
+            timerState = .resume
+        }
+        
+        timer = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(timerTick), userInfo: nil, repeats: true)
+        endDate = Date().addingTimeInterval(secondsLeft)
+        
+        sendToDelegate()
     }
     
     func stopTimer() {
         timer?.invalidate()
         timer = nil
-        endDate = nil
+        
         secondsLeft = workInterval
-        state = .stop
+        
+        endDate = nil
+        passedSteps = 0
+        nowBreak = false
+        
+        timerState = .stop
+        
+        sendToDelegate()
+    }
+    
+    // MARK: - Private Timer Manage
+    @objc private func timerTick() {
+        secondsLeft -= 1
+        
+        if secondsLeft <= 0 {
+            if breakType == .work {
+                passedSteps += 1
+            }
+            
+            nowBreak.toggle()
+            
+            nextTimer()
+        }
+    }
+    
+    private func pauseTimer() {
+        timer?.invalidate()
+        endDate = nil
+        timerState = .pause
+        
+        sendToDelegate()
+    }
+    
+    private func nextTimer() {
+        timer?.invalidate()
+        timer = nil
+        
+        endDate = nil
+        
+        switch breakType {
+        case .work:
+            secondsLeft = workInterval
+        case .shortBreak:
+            secondsLeft = breakInterval
+        case .longBreak:
+            secondsLeft = longBreakInterval
+        }
+        
+        timerState = .stop
+        
+        sendToDelegate()
+    }
+    
+    private func sendToDelegate() {
+        delegate?.didChangeTimerState(timerState)
+        delegate?.didChangeTimerType(breakType)
+        delegate?.didChangePassedSteps(passedSteps)
     }
 }
 
-// MARK: - Resign App Handlers
+// MARK: - Timer Observers
 extension TimerManager {
     private func configureNotificationCenterObserve() {
         NotificationCenter.default.addObserver(forName: UIApplication.didBecomeActiveNotification, object: nil, queue: nil) { [weak self] _ in
-            self?.loadDate()
+            self?.loadTimerData()
         }
         
         NotificationCenter.default.addObserver(forName: UIApplication.willResignActiveNotification, object: nil, queue: nil) { [weak self] _ in
-            self?.saveDate()
+            self?.saveTimerData()
         }
     }
     
-    private func saveDate() {
-        if active {
-            UserSettings.shared.endDate = endDate
+    private func saveTimerData() {
+        guard active else { return }
+        
+        UserSettings.shared.endDate = self.endDate
+        UserSettings.shared.pomodoroStep = self.passedSteps
+        UserSettings.shared.needBreak = self.nowBreak
+        
+        stopTimer()
+    }
+    
+    private func loadTimerData() {
+        guard let endDate = UserSettings.shared.endDate, let passedSteps = UserSettings.shared.pomodoroStep, let nowBreak = UserSettings.shared.needBreak else {
+            return
+        }
+        
+        if Date() > endDate {
             
-            stopTimer()
+        } else {
+            self.secondsLeft = endDate.timeIntervalSince(Date())
+            self.passedSteps = passedSteps
+            self.nowBreak = nowBreak
+            
+            startTimer()
         }
-    }
-    
-    private func loadDate() {
-        if let date = UserSettings.shared.endDate {
-            if Date() > date {
-                
-            } else {
-                secondsLeft = date.timeIntervalSince(Date())
-                
-                UserSettings.shared.endDate = nil
-                
-                startTimer()
-            }
-        }
+        
+        UserSettings.shared.endDate = nil
+        UserSettings.shared.pomodoroStep = nil
+        UserSettings.shared.needBreak = nil
     }
 }
 
-// MARK: - Date Helpers
+// MARK: - Helpers
 extension TimerManager {
-    func getSecondsLeft() -> String {
+    func secondsLeftText() -> String {
         let time = intervalToString(ti: Int(secondsLeft))
         return time
     }
     
-    func intervalToString(ti: NSInteger) -> String {
+    private func intervalToString(ti: NSInteger) -> String {
         let seconds = ti % 60
         let minutes = (ti / 60) % 60
         

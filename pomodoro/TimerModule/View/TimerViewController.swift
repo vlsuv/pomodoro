@@ -19,6 +19,30 @@ class TimerViewController: UIViewController {
         return label
     }()
     
+    var timerTypeLabel: UILabel = {
+        let label = UILabel()
+        label.font = .systemFont(ofSize: 16, weight: .medium)
+        label.textColor = Colors.darkGray
+        label.textAlignment = .center
+        return label
+    }()
+    
+    var circleProgressView: CircleProgressView = {
+        let progressView = CircleProgressView()
+        return progressView
+    }()
+    
+    var intervalButtonsStackView: UIStackView = {
+        let stackView = UIStackView()
+        stackView.axis = .horizontal
+        stackView.spacing = 6
+        stackView.distribution = .fillProportionally
+        stackView.alignment = .center
+        return stackView
+    }()
+    
+    var intervalButtons: [UIButton] = [UIButton]()
+    
     let startButton: UIButton = {
         let button = UIButton()
         let normalAttributedString = NSAttributedString(string: "Start", attributes: [
@@ -48,13 +72,8 @@ class TimerViewController: UIViewController {
         return button
     }()
     
-    var circleProgressView: CircleProgressView = {
-        let progressView = CircleProgressView()
-        return progressView
-    }()
+    var presenter: TimerViewPresenterProtocol?
     
-    var presenter: TimerViewPresenterProtocol!
-
     // MARK: - Init
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -63,15 +82,17 @@ class TimerViewController: UIViewController {
         setupTimeLabel()
         setupTimeButtons()
         configureProgressView()
+        configureStepsButtons()
+        configureTimerTypeLabel()
     }
     
     // MARK: - Targets
     @objc private func handleStartTimer() {
-        presenter.startTimer()
+        presenter?.startTimer()
     }
     
     @objc private func handleStopTimer() {
-        presenter.stopTimer()
+        presenter?.stopTimer()
     }
     
     // MARK: - Configures
@@ -89,7 +110,13 @@ class TimerViewController: UIViewController {
         stackView.distribution = .fillEqually
         
         view.addSubview(stackView)
-        stackView.anchor(left: view.leftAnchor, right: view.rightAnchor, bottom: view.safeAreaLayoutGuide.bottomAnchor, paddingLeft: 30, paddingRight: 30, paddingBottom: 40, height: 50)
+        stackView.anchor(left: view.leftAnchor,
+                         right: view.rightAnchor,
+                         bottom: view.safeAreaLayoutGuide.bottomAnchor,
+                         paddingLeft: 30,
+                         paddingRight: 30,
+                         paddingBottom: 40,
+                         height: 50)
         
         startButton.layer.cornerRadius = 6
         stopButton.layer.cornerRadius = 6
@@ -100,10 +127,43 @@ class TimerViewController: UIViewController {
         view.addSubview(circleProgressView)
         circleProgressView.center = view.center
     }
+    
+    private func configureStepsButtons() {
+        for _ in 0..<4 {
+            let button = UIButton()
+            button.layer.borderColor = Colors.lightGray.cgColor
+            button.layer.borderWidth = 1.5
+            
+            let buttonSize: CGFloat = 20
+            button.anchor(height: buttonSize, width: buttonSize)
+            button.layer.cornerRadius = buttonSize / 2
+            
+            intervalButtons.append(button)
+            intervalButtonsStackView.addArrangedSubview(button)
+        }
+        
+        view.addSubview(intervalButtonsStackView)
+        intervalButtonsStackView.anchor(bottom: startButton.topAnchor, paddingBottom: 40)
+        intervalButtonsStackView.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
+    }
+    
+    private func configureTimerTypeLabel() {
+        view.addSubview(timerTypeLabel)
+        timerTypeLabel.anchor(top: timeLabel.bottomAnchor, paddingTop: 8)
+        timerTypeLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
+    }
 }
 
 // MARK: - TimerViewProtocol
 extension TimerViewController: TimerViewProtocol {
+    func updateTimerType(_ type: BreakType) {
+        timerTypeLabel.text = type.title
+    }
+    
+    func updatePassedSteps(_ step: Int) {
+        updateStepsButtons(with: step)
+    }
+    
     func updateTimerState(_ state: TimerState) {
         switch state {
         case .start(time: let time):
@@ -126,9 +186,20 @@ extension TimerViewController: TimerViewProtocol {
     }
 }
 
+// MARK: - Helpers
 extension TimerViewController {
     private func changeButtonStatus(isOn: Bool) {
         self.stopButton.isHidden = !isOn
         self.startButton.isSelected = isOn
+    }
+    
+    private func updateStepsButtons(with steps: Int) {
+        for (index, button) in intervalButtons.enumerated() {
+            if index < steps {
+                button.backgroundColor = Colors.baseRed
+            } else {
+                button.backgroundColor = Colors.white
+            }
+        }
     }
 }
