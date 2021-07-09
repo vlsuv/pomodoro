@@ -73,11 +73,11 @@ class TimerManager: TimerManagerProtocol {
     }
     
     private var breakInterval: Double {
-        return Double(UserSettings.shared.breakInterval) * 60
+        return Double(UserSettings.shared.shortBreak) * 60
     }
     
     private var longBreakInterval: Double {
-        return Double(UserSettings.shared.longBreakInterval) * 60
+        return Double(UserSettings.shared.longBreak) * 60
     }
     
     // MARK: - Steps Properties
@@ -219,14 +219,14 @@ extension TimerManager {
         guard active else { return }
         
         UserSettings.shared.endDate = self.endDate
-        UserSettings.shared.pomodoroStep = self.passedSteps
-        UserSettings.shared.needBreak = self.nowBreak
+        UserSettings.shared.passedSteps = self.passedSteps
+        UserSettings.shared.nowBreak = self.nowBreak
         
         stopTimer()
     }
     
     private func loadTimerData() {
-        guard let endDate = UserSettings.shared.endDate, let passedSteps = UserSettings.shared.pomodoroStep, let nowBreak = UserSettings.shared.needBreak else {
+        guard let endDate = UserSettings.shared.endDate, let passedSteps = UserSettings.shared.passedSteps, let nowBreak = UserSettings.shared.nowBreak else {
             return
         }
         
@@ -241,8 +241,8 @@ extension TimerManager {
         }
         
         UserSettings.shared.endDate = nil
-        UserSettings.shared.pomodoroStep = nil
-        UserSettings.shared.needBreak = nil
+        UserSettings.shared.passedSteps = nil
+        UserSettings.shared.nowBreak = nil
     }
 }
 

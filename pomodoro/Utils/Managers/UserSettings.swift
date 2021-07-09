@@ -15,12 +15,12 @@ final class UserSettings {
     
     private enum settingKeys: String {
         case workInterval
-        case breakInterval
-        case longBreakInterval
+        case shortBreak
+        case longBreak
         
         case endDate
-        case pomodoroStep
-        case needBreak
+        case passedSteps
+        case nowBreak
     }
     
     var workInterval: Int {
@@ -34,24 +34,24 @@ final class UserSettings {
         }
     }
     
-    var breakInterval: Int {
+    var shortBreak: Int {
         get {
-            return UserDefaults.standard.integer(forKey: settingKeys.breakInterval.rawValue)
+            return UserDefaults.standard.integer(forKey: settingKeys.shortBreak.rawValue)
         }
         set {
             let defaults = UserDefaults.standard
-            let key = settingKeys.breakInterval.rawValue
+            let key = settingKeys.shortBreak.rawValue
             defaults.set(newValue, forKey: key)
         }
     }
     
-    var longBreakInterval: Int {
+    var longBreak: Int {
         get {
-            return UserDefaults.standard.integer(forKey: settingKeys.longBreakInterval.rawValue)
+            return UserDefaults.standard.integer(forKey: settingKeys.longBreak.rawValue)
         }
         set {
             let defaults = UserDefaults.standard
-            let key = settingKeys.longBreakInterval.rawValue
+            let key = settingKeys.longBreak.rawValue
             defaults.set(newValue, forKey: key)
         }
     }
@@ -68,24 +68,24 @@ final class UserSettings {
         }
     }
     
-    var pomodoroStep: Int? {
+    var passedSteps: Int? {
         get {
-            return UserDefaults.standard.integer(forKey: settingKeys.pomodoroStep.rawValue)
+            return UserDefaults.standard.integer(forKey: settingKeys.passedSteps.rawValue)
         }
         set {
             let defaults = UserDefaults.standard
-            let key = settingKeys.pomodoroStep.rawValue
+            let key = settingKeys.passedSteps.rawValue
             defaults.set(newValue, forKey: key)
         }
     }
     
-    var needBreak: Bool? {
+    var nowBreak: Bool? {
         get {
-            return UserDefaults.standard.bool(forKey: settingKeys.needBreak.rawValue)
+            return UserDefaults.standard.bool(forKey: settingKeys.nowBreak.rawValue)
         }
         set {
             let defaults = UserDefaults.standard
-            let key = settingKeys.needBreak.rawValue
+            let key = settingKeys.nowBreak.rawValue
             defaults.set(newValue, forKey: key)
         }
     }

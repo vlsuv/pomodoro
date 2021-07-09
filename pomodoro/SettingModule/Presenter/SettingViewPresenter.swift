@@ -51,17 +51,17 @@ class SettingViewPresenter: SettingViewPresenterProtocol {
         let breakInterval = Setting(name: "Short Break",
                                     params: Array(1...30),
                                     selectedParam: { () -> (Int) in
-                                        return UserSettings.shared.breakInterval
+                                        return UserSettings.shared.shortBreak
         }) { param in
-            UserSettings.shared.breakInterval = param
+            UserSettings.shared.shortBreak = param
         }
         
         let longBreakInterval = Setting(name: "Long Break",
                                         params: Array(1...60),
                                         selectedParam: { () -> (Int) in
-                                            return UserSettings.shared.longBreakInterval
+                                            return UserSettings.shared.longBreak
         }) { param in
-            UserSettings.shared.longBreakInterval = param
+            UserSettings.shared.longBreak = param
         }
         
         settings = [workInterval, breakInterval, longBreakInterval]
