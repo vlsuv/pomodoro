@@ -50,15 +50,16 @@ class CircleProgressView: UIView {
         self.layer.addSublayer(progressLayer)
     }
     
-    func progressAnimation(duration: TimeInterval) {
+    func progressAnimation(secondsLeft: TimeInterval, passedSeconds: TimeInterval) {
         guard progressLayer.timeOffset == 0.0 else {
             resume()
             return
         }
-        let circularProgressAnimation = CABasicAnimation(keyPath: "strokeEnd")
         
-        circularProgressAnimation.duration = duration
-        circularProgressAnimation.toValue = 1.0
+        let circularProgressAnimation = CABasicAnimation(keyPath: "strokeEnd")
+        circularProgressAnimation.beginTime = progressLayer.convertTime(CACurrentMediaTime(), from: nil) - passedSeconds
+        circularProgressAnimation.duration = secondsLeft
+        circularProgressAnimation.toValue = 1
         circularProgressAnimation.fillMode = .forwards
         circularProgressAnimation.isRemovedOnCompletion = false
         progressLayer.add(circularProgressAnimation, forKey: AnimationKeys.progressAnimation)

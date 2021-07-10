@@ -156,27 +156,20 @@ class TimerViewController: UIViewController {
 
 // MARK: - TimerViewProtocol
 extension TimerViewController: TimerViewProtocol {
-    func updateTimerType(_ type: BreakType) {
-        timerTypeLabel.text = type.title
-    }
-    
-    func updatePassedSteps(_ step: Int) {
-        updateStepsButtons(with: step)
-    }
-    
     func updateTimerState(_ state: TimerState) {
+        
         switch state {
-        case .start(time: let time):
-            circleProgressView.progressAnimation(duration: time)
-            changeButtonStatus(isOn: true)
-        case .resume:
-            circleProgressView.resume()
+        case .start(secondsLeft: let secondsLeft, passedSeconds: let passedSeconds, timerType: let timerType):
+            timerTypeLabel.text = timerType.title
+            circleProgressView.progressAnimation(secondsLeft: secondsLeft, passedSeconds: passedSeconds)
             changeButtonStatus(isOn: true)
         case .pause:
             circleProgressView.pause()
             changeButtonStatus(isOn: false)
-        case .stop:
+        case .stop(passedSteps: let passedSteps, nextTimerType: let timerType):
             circleProgressView.removeAnimation()
+            updateStepsButtons(with: passedSteps)
+            timerTypeLabel.text = timerType.title
             changeButtonStatus(isOn: false)
         }
     }

@@ -8,14 +8,19 @@
 
 import UIKit
 
-enum TimerState {
-    case start(time: Double)
-    case resume
-    case pause
-    case stop
+protocol TimerManagerDelegate {
+    func secondsLeft(_ stringSeconds: String)
+    func didChangeTimerState(to state: TimerState)
+    func didChangeEndDate(with date: Date?)
 }
 
-enum BreakType {
+enum TimerState {
+    case start(secondsLeft: Double, passedSeconds: Double, timerType: TimerType)
+    case pause
+    case stop(passedSteps: Int, nextTimerType: TimerType)
+}
+
+enum TimerType {
     case work
     case shortBreak
     case longBreak
@@ -30,13 +35,6 @@ enum BreakType {
             return "Long Break"
         }
     }
-}
-
-protocol TimerManagerDelegate {
-    func didChangeTimerState(_ state: TimerState)
-    func didChangeTime(_ timeString: String)
-    func didChangeTimerType(_ type: BreakType)
-    func didChangePassedSteps(_ step: Int)
 }
 
 protocol TimerManagerProtocol: class {
@@ -56,38 +54,30 @@ class TimerManager: TimerManagerProtocol {
     private var timer: Timer?
     
     private var endDate: Date?
+    private var endDateSetted: Bool = false
     
     private var secondsLeft: TimeInterval! {
         willSet(newValue) {
             let time = intervalToString(ti: NSInteger(newValue))
             
-            delegate?.didChangeTime(time)
+            delegate?.secondsLeft(time)
         }
     }
     
-    private var timerState: TimerState = .stop
-    
-    // MARK: - UserDefaults Properties
-    private var workInterval: Double {
-        return Double(UserSettings.shared.workInterval) * 60
-    }
-    
-    private var breakInterval: Double {
-        return Double(UserSettings.shared.shortBreak) * 60
-    }
-    
-    private var longBreakInterval: Double {
-        return Double(UserSettings.shared.longBreak) * 60
+    private var timerState: TimerState {
+        willSet {
+            delegate?.didChangeTimerState(to: newValue)
+        }
     }
     
     // MARK: - Steps Properties
-    private var maxSteps: Int = 4
+    private var maxSteps: Int
     
-    private var passedSteps: Int = 0
+    private var passedSteps: Int
     
-    private var nowBreak: Bool = false
+    private var nowBreak: Bool
     
-    private var breakType: BreakType {
+    private var timerType: TimerType {
         if nowBreak {
             if passedSteps == maxSteps {
                 return .longBreak
@@ -99,11 +89,20 @@ class TimerManager: TimerManagerProtocol {
         }
     }
     
-    // MARK: - Active Properties
-    private var firstActive: Bool {
-        return timer == nil && endDate == nil
+    // MARK: - Settings Properties
+    private var workInterval: Double {
+        return Double(UserSettings.shared.workInterval) * 60
+    }
+
+    private var breakInterval: Double {
+        return Double(UserSettings.shared.shortBreak) * 60
+    }
+
+    private var longBreakInterval: Double {
+        return Double(UserSettings.shared.longBreak) * 60
     }
     
+    // MARK: - Timer State Properties
     private var active: Bool {
         return timer != nil && endDate != nil
     }
@@ -114,7 +113,13 @@ class TimerManager: TimerManagerProtocol {
     
     // MARK: - Init
     init() {
-        secondsLeft = workInterval
+        self.maxSteps = 4
+        self.passedSteps = 0
+        self.nowBreak = false
+        
+        self.timerState = .stop(passedSteps: passedSteps, nextTimerType: .work)
+        
+        self.secondsLeft = workInterval
         
         configureNotificationCenterObserve()
     }
@@ -126,16 +131,17 @@ class TimerManager: TimerManagerProtocol {
             return
         }
         
-        if firstActive {
-            timerState = .start(time: secondsLeft)
-        } else {
-            timerState = .resume
-        }
-        
         timer = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(timerTick), userInfo: nil, repeats: true)
+        
         endDate = Date().addingTimeInterval(secondsLeft)
         
-        sendToDelegate()
+        timerState = .start(secondsLeft: secondsLeft, passedSeconds: workInterval - secondsLeft, timerType: timerType)
+        
+        if !endDateSetted {
+            endDateSetted = true
+            
+            delegate?.didChangeEndDate(with: endDate!)
+        }
     }
     
     func stopTimer() {
@@ -148,9 +154,10 @@ class TimerManager: TimerManagerProtocol {
         passedSteps = 0
         nowBreak = false
         
-        timerState = .stop
+        timerState = .stop(passedSteps: passedSteps, nextTimerType: timerType)
         
-        sendToDelegate()
+        delegate?.didChangeEndDate(with: nil)
+        endDateSetted = false
     }
     
     // MARK: - Private Timer Manage
@@ -158,7 +165,7 @@ class TimerManager: TimerManagerProtocol {
         secondsLeft -= 1
         
         if secondsLeft <= 0 {
-            if breakType == .work {
+            if timerType == .work {
                 passedSteps += 1
             }
             
@@ -170,10 +177,13 @@ class TimerManager: TimerManagerProtocol {
     
     private func pauseTimer() {
         timer?.invalidate()
+        
         endDate = nil
+        
         timerState = .pause
         
-        sendToDelegate()
+        delegate?.didChangeEndDate(with: nil)
+        endDateSetted = false
     }
     
     private func nextTimer() {
@@ -182,7 +192,7 @@ class TimerManager: TimerManagerProtocol {
         
         endDate = nil
         
-        switch breakType {
+        switch timerType {
         case .work:
             secondsLeft = workInterval
         case .shortBreak:
@@ -191,15 +201,9 @@ class TimerManager: TimerManagerProtocol {
             secondsLeft = longBreakInterval
         }
         
-        timerState = .stop
+        timerState = .stop(passedSteps: passedSteps, nextTimerType: timerType)
         
-        sendToDelegate()
-    }
-    
-    private func sendToDelegate() {
-        delegate?.didChangeTimerState(timerState)
-        delegate?.didChangeTimerType(breakType)
-        delegate?.didChangePassedSteps(passedSteps)
+        endDateSetted = false
     }
 }
 
@@ -222,7 +226,9 @@ extension TimerManager {
         UserSettings.shared.passedSteps = self.passedSteps
         UserSettings.shared.nowBreak = self.nowBreak
         
-        stopTimer()
+        timer?.invalidate()
+        timer = nil
+        endDate = nil
     }
     
     private func loadTimerData() {
@@ -231,7 +237,7 @@ extension TimerManager {
         }
         
         if Date() > endDate {
-            
+            nextTimer()
         } else {
             self.secondsLeft = endDate.timeIntervalSince(Date())
             self.passedSteps = passedSteps

@@ -11,8 +11,6 @@ import UIKit
 protocol TimerViewProtocol {
     func updateTimerLabel(with time: String)
     func updateTimerState(_ state: TimerState)
-    func updateTimerType(_ type: BreakType)
-    func updatePassedSteps(_ step: Int)
 }
 
 protocol TimerViewPresenterProtocol {
@@ -28,9 +26,13 @@ class TimerViewPresenter: TimerViewPresenterProtocol {
     
     var timerManager: TimerManagerProtocol?
     
+    var notificationManager: NotificationManagerType?
+    
+    // MARK: - Init
     required init(view: TimerViewProtocol) {
         self.view = view
         self.timerManager = TimerManager()
+        self.notificationManager = NotificationManager()
         
         timerManager?.delegate = self
         
@@ -51,19 +53,20 @@ class TimerViewPresenter: TimerViewPresenterProtocol {
 
 // MARK: - TimerManagerDelegate
 extension TimerViewPresenter: TimerManagerDelegate {
-    func didChangeTimerType(_ type: BreakType) {
-        view.updateTimerType(type)
+    func didChangeEndDate(with date: Date?) {
+        guard let date = date else {
+            notificationManager?.removeAllNotifications()
+            return
+        }
+        
+        notificationManager?.sendNotification(with: date)
     }
     
-    func didChangePassedSteps(_ step: Int) {
-        view.updatePassedSteps(step)
-    }
-    
-    func didChangeTimerState(_ state: TimerState) {
+    func didChangeTimerState(to state: TimerState) {
         view.updateTimerState(state)
     }
     
-    func didChangeTime(_ timeString: String) {
-        view.updateTimerLabel(with: timeString)
+    func secondsLeft(_ stringSeconds: String) {
+        view.updateTimerLabel(with: stringSeconds)
     }
 }
