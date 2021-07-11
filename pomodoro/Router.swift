@@ -15,7 +15,7 @@ protocol BaseRouterProtocol {
 
 protocol RouterProtocol: BaseRouterProtocol {
     func initilizationViewController()
-    func showTimePickerViewController(withSetting setting: Setting)
+    func showTimePickerViewController(withSetting setting: StaticSettingOption)
 }
 
 class Router: RouterProtocol {
@@ -34,7 +34,7 @@ class Router: RouterProtocol {
         }
     }
     
-    func showTimePickerViewController(withSetting setting: Setting) {
+    func showTimePickerViewController(withSetting setting: StaticSettingOption) {
         guard let tabBarController = tabBarController, let timePickerViewController = assemblyModuleBuilder?.createTimePickerViewController(router: self, setting: setting) else { return }
         
         timePickerViewController.modalPresentationStyle = .custom

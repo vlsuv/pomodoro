@@ -79,7 +79,7 @@ extension TimePickerViewController: UIPickerViewDataSource {
     
     func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
         let option = presenter.setting.params[row]
-        return "\(option) min"
+        return "\(option) \(presenter.setting.abbreviation)"
     }
 }
 

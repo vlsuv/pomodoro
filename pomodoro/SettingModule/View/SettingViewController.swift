@@ -34,6 +34,7 @@ class SettingViewController: UIViewController {
         tableView.delegate = self
         
         tableView.register(TimeSettingCell.self, forCellReuseIdentifier: TimeSettingCell.identifier)
+        tableView.register(SwitchSettingCell.self, forCellReuseIdentifier: SwitchSettingCell.identifier)
         
         view.addSubview(tableView)
         tableView.anchor(top: view.safeAreaLayoutGuide.topAnchor, left: view.leftAnchor, right: view.rightAnchor, bottom: view.bottomAnchor)
@@ -49,18 +50,37 @@ extension SettingViewController: SettingViewProtocol {
 
 // MARK: - UITableViewDataSource
 extension SettingViewController: UITableViewDataSource {
+    func numberOfSections(in tableView: UITableView) -> Int {
+        return presenter?.settings.count ?? 0
+    }
+    
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return presenter?.settings?.count ?? 0
+        return presenter?.settings[section].option.count ?? 0
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: TimeSettingCell.identifier, for: indexPath) as? TimeSettingCell else { return UITableViewCell() }
         
-        if let setting = presenter?.settings?[indexPath.row] {
-            cell.configure(setting)
+        guard let setting = presenter?.settings[indexPath.section].option[indexPath.row] else {
+            return UITableViewCell()
         }
         
-        return cell
+        switch setting {
+        case .staticCell(model: let model):
+            guard let cell = tableView.dequeueReusableCell(withIdentifier: TimeSettingCell.identifier, for: indexPath) as? TimeSettingCell else { return UITableViewCell() }
+            cell.configure(model)
+            
+            return cell
+        case .switchCell(model: let model):
+            guard let cell = tableView.dequeueReusableCell(withIdentifier: SwitchSettingCell.identifier, for: indexPath) as? SwitchSettingCell else { return UITableViewCell() }
+            cell.didChangedSwitch = { [weak self] _ in
+                guard let indexPath = self?.tableView.indexPath(for: cell) else { return }
+                
+                self?.presenter?.showTimePicker(indexPath: indexPath)
+            }
+            cell.configure(model)
+            
+            return cell
+        }
     }
 }
 

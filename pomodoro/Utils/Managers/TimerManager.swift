@@ -71,15 +71,13 @@ class TimerManager: TimerManagerProtocol {
     }
     
     // MARK: - Steps Properties
-    private var maxSteps: Int
-    
     private var passedSteps: Int
     
     private var nowBreak: Bool
     
     private var timerType: TimerType {
         if nowBreak {
-            if passedSteps == maxSteps {
+            if passedSteps % longBreakAfter == 0 {
                 return .longBreak
             } else {
                 return .shortBreak
@@ -102,6 +100,10 @@ class TimerManager: TimerManagerProtocol {
         return Double(UserSettings.shared.longBreak) * 60
     }
     
+    private var longBreakAfter: Int {
+        return UserSettings.shared.longBreakAfter
+    }
+    
     // MARK: - Timer State Properties
     private var active: Bool {
         return timer != nil && endDate != nil
@@ -113,7 +115,6 @@ class TimerManager: TimerManagerProtocol {
     
     // MARK: - Init
     init() {
-        self.maxSteps = 4
         self.passedSteps = 0
         self.nowBreak = false
         

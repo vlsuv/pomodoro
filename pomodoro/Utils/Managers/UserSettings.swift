@@ -17,10 +17,14 @@ final class UserSettings {
         case workInterval
         case shortBreak
         case longBreak
+        case longBreakAfter
+        case taskGoal
         
         case endDate
         case passedSteps
         case nowBreak
+        
+        case reminders
     }
     
     var workInterval: Int {
@@ -86,6 +90,39 @@ final class UserSettings {
         set {
             let defaults = UserDefaults.standard
             let key = settingKeys.nowBreak.rawValue
+            defaults.set(newValue, forKey: key)
+        }
+    }
+    
+    var longBreakAfter: Int {
+        get {
+            return UserDefaults.standard.integer(forKey: settingKeys.longBreakAfter.rawValue)
+        }
+        set {
+            let defaults = UserDefaults.standard
+            let key = settingKeys.longBreakAfter.rawValue
+            defaults.set(newValue, forKey: key)
+        }
+    }
+    
+    var taskGoal: Int {
+        get {
+            return UserDefaults.standard.integer(forKey: settingKeys.taskGoal.rawValue)
+        }
+        set {
+            let defaults = UserDefaults.standard
+            let key = settingKeys.taskGoal.rawValue
+            defaults.set(newValue, forKey: key)
+        }
+    }
+    
+    var reminders: Bool {
+        get {
+            return UserDefaults.standard.bool(forKey: settingKeys.reminders.rawValue)
+        }
+        set {
+            let defaults = UserDefaults.standard
+            let key = settingKeys.reminders.rawValue
             defaults.set(newValue, forKey: key)
         }
     }

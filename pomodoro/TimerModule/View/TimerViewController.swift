@@ -74,6 +74,10 @@ class TimerViewController: UIViewController {
     
     var presenter: TimerViewPresenterProtocol?
     
+    var taskGoal: Int {
+        return UserSettings.shared.taskGoal
+    }
+    
     // MARK: - Init
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -129,7 +133,7 @@ class TimerViewController: UIViewController {
     }
     
     private func configureStepsButtons() {
-        for _ in 0..<4 {
+        for _ in 0..<taskGoal {
             let button = UIButton()
             button.layer.borderColor = Colors.lightGray.cgColor
             button.layer.borderWidth = 1.5

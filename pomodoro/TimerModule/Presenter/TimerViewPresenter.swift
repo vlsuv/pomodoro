@@ -28,6 +28,10 @@ class TimerViewPresenter: TimerViewPresenterProtocol {
     
     var notificationManager: NotificationManagerType?
     
+    var remindersIsOn: Bool {
+        return UserSettings.shared.reminders
+    }
+    
     // MARK: - Init
     required init(view: TimerViewProtocol) {
         self.view = view
@@ -54,6 +58,8 @@ class TimerViewPresenter: TimerViewPresenterProtocol {
 // MARK: - TimerManagerDelegate
 extension TimerViewPresenter: TimerManagerDelegate {
     func didChangeEndDate(with date: Date?) {
+        guard remindersIsOn else { return }
+        
         guard let date = date else {
             notificationManager?.removeAllNotifications()
             return

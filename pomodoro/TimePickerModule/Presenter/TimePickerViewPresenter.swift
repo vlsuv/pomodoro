@@ -13,8 +13,8 @@ protocol TimePickerViewProtocol: class {
 }
 
 protocol TimePickerViewPresenterProtocol {
-    init(view: TimePickerViewProtocol, router: RouterProtocol, setting: Setting)
-    var setting: Setting { get set }
+    init(view: TimePickerViewProtocol, router: RouterProtocol, setting: StaticSettingOption)
+    var setting: StaticSettingOption { get set }
     func saveSetting(fromRow row: Int)
     func getSelectedParam()
 }
@@ -26,10 +26,10 @@ class TimePickerViewPresenter: TimePickerViewPresenterProtocol {
     
     var router: RouterProtocol
     
-    var setting: Setting
+    var setting: StaticSettingOption
     
     // MARK: - Init
-    required init(view: TimePickerViewProtocol, router: RouterProtocol, setting: Setting) {
+    required init(view: TimePickerViewProtocol, router: RouterProtocol, setting: StaticSettingOption) {
         self.view = view
         self.router = router
         self.setting = setting

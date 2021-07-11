@@ -1,19 +1,21 @@
 //
-//  TimeSettingCell.swift
+//  SwitchSettingCell.swift
 //  pomodoro
 //
-//  Created by vlsuv on 08.07.2021.
+//  Created by vlsuv on 11.07.2021.
 //  Copyright © 2021 vlsuv. All rights reserved.
 //
 
 import UIKit
 
-class TimeSettingCell: UITableViewCell {
+class SwitchSettingCell: UITableViewCell {
     
     // MARK: - Properties
-    static let identifier: String = "TimeSettingCell"
+    static let identifier: String = "SwitchSettingCell"
     
-    private var titleLabel: UILabel = {
+    var didChangedSwitch: ((Bool) -> ())?
+    
+    var titleLabel: UILabel = {
         let label = UILabel()
         label.textColor = Colors.black
         label.textAlignment = .left
@@ -21,20 +23,19 @@ class TimeSettingCell: UITableViewCell {
         return label
     }()
     
-    private var selectedParamLabel: UILabel = {
-        let label = UILabel()
-        label.textAlignment = .right
-        label.textColor = Colors.mediumGray
-        label.font = .systemFont(ofSize: 16, weight: .light)
-        return label
+    var switchView: UISwitch = {
+        let switchView = UISwitch()
+        return switchView
     }()
     
-    func configure(_ setting: StaticSettingOption) {
-        titleLabel.text = setting.name
-        
-        guard let selectedParam = setting.selectedParam?() else { return }
-        
-        selectedParamLabel.text = "\(selectedParam) \(setting.abbreviation)"
+    func configure(_ model: SwitchSettingOption) {
+        titleLabel.text = model.name
+        switchView.isOn = model.isOn
+    }
+    
+    // MARK: - Actions
+    @objc private func switchValueChanged(_ sender: UISwitch) {
+        didChangedSwitch?(sender.isOn)
     }
     
     // MARK: - Init
@@ -42,27 +43,27 @@ class TimeSettingCell: UITableViewCell {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         addSubviews()
         configureConstraints()
+        
+        switchView.addTarget(self, action: #selector(switchValueChanged(_:)), for: .valueChanged)
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
+    
     // MARK: - Configures
     private func addSubviews() {
-        [titleLabel, selectedParamLabel]
+        [titleLabel]
             .forEach { contentView.addSubview($0) }
+        
+        accessoryView = switchView
     }
     
     private func configureConstraints() {
-        selectedParamLabel.anchor(top: contentView.topAnchor,
-                                  right: contentView.rightAnchor,
-                                  bottom: contentView.bottomAnchor,
-                                  paddingRight: 18)
-        
         titleLabel.anchor(top: contentView.topAnchor,
                           left: contentView.leftAnchor,
-                          right: selectedParamLabel.leftAnchor,
+                          right: contentView.rightAnchor,
                           bottom: contentView.bottomAnchor,
                           paddingLeft: 18,
                           paddingRight: 8)
