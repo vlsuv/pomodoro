@@ -37,7 +37,10 @@ class SettingViewController: UIViewController {
         tableView.register(SwitchSettingCell.self, forCellReuseIdentifier: SwitchSettingCell.identifier)
         
         view.addSubview(tableView)
-        tableView.anchor(top: view.safeAreaLayoutGuide.topAnchor, left: view.leftAnchor, right: view.rightAnchor, bottom: view.bottomAnchor)
+        tableView.anchor(top: view.safeAreaLayoutGuide.topAnchor,
+                         left: view.leftAnchor,
+                         right: view.rightAnchor,
+                         bottom: view.bottomAnchor)
     }
 }
 
@@ -65,7 +68,7 @@ extension SettingViewController: UITableViewDataSource {
         }
         
         switch setting {
-        case .staticCell(model: let model):
+        case .timeCell(model: let model):
             guard let cell = tableView.dequeueReusableCell(withIdentifier: TimeSettingCell.identifier, for: indexPath) as? TimeSettingCell else { return UITableViewCell() }
             cell.configure(model)
             
@@ -75,7 +78,7 @@ extension SettingViewController: UITableViewDataSource {
             cell.didChangedSwitch = { [weak self] _ in
                 guard let indexPath = self?.tableView.indexPath(for: cell) else { return }
                 
-                self?.presenter?.showTimePicker(indexPath: indexPath)
+                self?.presenter?.didTapSetting(at: indexPath)
             }
             cell.configure(model)
             
@@ -89,7 +92,7 @@ extension SettingViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
         
-        presenter?.showTimePicker(indexPath: indexPath)
+        presenter?.didTapSetting(at: indexPath)
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {

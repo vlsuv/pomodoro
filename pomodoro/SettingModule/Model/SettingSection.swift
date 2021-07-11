@@ -14,12 +14,12 @@ struct SettingSection {
 }
 
 enum SettingOptionType {
-    case staticCell(model: StaticSettingOption)
+    case timeCell(model: TimeSettingOption)
     case switchCell(model: SwitchSettingOption)
 }
 
-struct StaticSettingOption {
-    var name: String
+struct TimeSettingOption {
+    var title: String
     var params: [Int]
     var abbreviation: String
     var selectedParam: (() -> (Int))?
@@ -27,7 +27,7 @@ struct StaticSettingOption {
 }
 
 struct SwitchSettingOption {
-    var name: String
+    var title: String
     var handler: (() -> ())?
     var isOn: Bool
 }

@@ -15,8 +15,7 @@ protocol SettingViewProtocol: class {
 protocol SettingViewPresenterProtocol {
     init(view: SettingViewProtocol, router: RouterProtocol)
     var settings: [SettingSection] { get set }
-    func setupSettings()
-    func showTimePicker(indexPath: IndexPath)
+    func didTapSetting(at indexPath: IndexPath)
 }
 
 class SettingViewPresenter: SettingViewPresenterProtocol {
@@ -38,70 +37,69 @@ class SettingViewPresenter: SettingViewPresenterProtocol {
     }
     
     // MARK: - Configures
-    func setupSettings() {
-        let workInterval = StaticSettingOption(name: "Work Interval",
-                                               params: Array(1...60),
-                                               abbreviation: "min",
-                                               selectedParam: { () -> (Int) in
+    private func setupSettings() {
+        let workInterval = TimeSettingOption(title: "Work Interval",
+                                             params: Array(1...60),
+                                             abbreviation: "min",
+                                             selectedParam: { () -> (Int) in
                                                 return UserSettings.shared.workInterval
         }) { param in
             UserSettings.shared.workInterval = param
         }
         
-        
-        let shortBreak = StaticSettingOption(name: "Short Break",
-                                             params: Array(1...30),
-                                             abbreviation: "min",
-                                             selectedParam: { () -> (Int) in
-                                                return UserSettings.shared.shortBreak
+        let shortBreak = TimeSettingOption(title: "Short Break",
+                                           params: Array(1...30),
+                                           abbreviation: "min",
+                                           selectedParam: { () -> (Int) in
+                                            return UserSettings.shared.shortBreak
         }) { param in
             UserSettings.shared.shortBreak = param
         }
         
-        let longBreak = StaticSettingOption(name: "Long Break",
-                                            params: Array(1...60),
-                                            abbreviation: "min",
-                                            selectedParam: { () -> (Int) in
-                                                return UserSettings.shared.longBreak
+        let longBreak = TimeSettingOption(title: "Long Break",
+                                          params: Array(1...60),
+                                          abbreviation: "min",
+                                          selectedParam: { () -> (Int) in
+                                            return UserSettings.shared.longBreak
         }) { param in
             UserSettings.shared.longBreak = param
         }
         
-        let longBreakAfter = StaticSettingOption(name: "Long Break After",
-                                                 params: Array(1...10),
-                                                 abbreviation: "intervals",
-                                                 selectedParam: { () -> (Int) in
-                                                    return UserSettings.shared.longBreakAfter
+        let longBreakAfter = TimeSettingOption(title: "Long Break After",
+                                               params: Array(1...10),
+                                               abbreviation: "intervals",
+                                               selectedParam: { () -> (Int) in
+                                                return UserSettings.shared.longBreakAfter
         },
-                                                 completionHandler: { param in
-                                                    UserSettings.shared.longBreakAfter = param
+                                               completionHandler: { param in
+                                                UserSettings.shared.longBreakAfter = param
         })
         
-        let taskGoal = StaticSettingOption(name: "Task Goal",
-                                           params: Array(1...6),
-                                           abbreviation: "intervals",
-                                           selectedParam: { () -> (Int) in
+        let taskGoal = TimeSettingOption(title: "Task Goal",
+                                         params: Array(1...6),
+                                         abbreviation: "intervals",
+                                         selectedParam: { () -> (Int) in
                                             return UserSettings.shared.taskGoal
         },
-                                           completionHandler: { param in
+                                         completionHandler: { param in
                                             UserSettings.shared.taskGoal = param
         })
         
         let timerSection = SettingSection(title: "TIME", option: [
-            .staticCell(model: workInterval),
-            .staticCell(model: shortBreak),
-            .staticCell(model: longBreak),
-            .staticCell(model: longBreakAfter),
-            .staticCell(model: taskGoal)
+            .timeCell(model: workInterval),
+            .timeCell(model: shortBreak),
+            .timeCell(model: longBreak),
+            .timeCell(model: longBreakAfter),
+            .timeCell(model: taskGoal)
         ])
         
-        let reminders = SwitchSettingOption(name: "Reminders",
+        let reminders = SwitchSettingOption(title: "Reminders",
                                             handler: {
                                                 UserSettings.shared.reminders.toggle()
         },
                                             isOn: UserSettings.shared.reminders)
         
-        let theme = SwitchSettingOption(name: "Dark Mode",
+        let theme = SwitchSettingOption(title: "Dark Mode",
                                         handler: nil,
                                         isOn: false)
         
@@ -120,11 +118,11 @@ class SettingViewPresenter: SettingViewPresenterProtocol {
     }
     
     // MARK - Input Handlers
-    func showTimePicker(indexPath: IndexPath) {
+    func didTapSetting(at indexPath: IndexPath) {
         let setting = settings[indexPath.section].option[indexPath.row]
         
         switch setting {
-        case .staticCell(model: let model):
+        case .timeCell(model: let model):
             router.showTimePickerViewController(withSetting: model)
         case .switchCell(model: let model):
             model.handler?()

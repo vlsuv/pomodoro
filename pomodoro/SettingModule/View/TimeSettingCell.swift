@@ -29,8 +29,8 @@ class TimeSettingCell: UITableViewCell {
         return label
     }()
     
-    func configure(_ setting: StaticSettingOption) {
-        titleLabel.text = setting.name
+    func configure(_ setting: TimeSettingOption) {
+        titleLabel.text = setting.title
         
         guard let selectedParam = setting.selectedParam?() else { return }
         

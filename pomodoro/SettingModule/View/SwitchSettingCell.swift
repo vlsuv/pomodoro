@@ -29,7 +29,7 @@ class SwitchSettingCell: UITableViewCell {
     }()
     
     func configure(_ model: SwitchSettingOption) {
-        titleLabel.text = model.name
+        titleLabel.text = model.title
         switchView.isOn = model.isOn
     }
     
@@ -50,7 +50,6 @@ class SwitchSettingCell: UITableViewCell {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
     
     // MARK: - Configures
     private func addSubviews() {

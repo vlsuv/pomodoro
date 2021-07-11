@@ -11,7 +11,7 @@ import UIKit
 protocol AssemblyModuleBuilderProtocol {
     func createTimerViewController() -> UIViewController
     func createSettingsViewController(router: RouterProtocol) -> UIViewController
-    func createTimePickerViewController(router: RouterProtocol, setting: StaticSettingOption) -> UIViewController
+    func createTimePickerViewController(router: RouterProtocol, setting: TimeSettingOption) -> UIViewController
 }
 
 final class AssemblyModuleBuilder: AssemblyModuleBuilderProtocol {
@@ -31,7 +31,7 @@ final class AssemblyModuleBuilder: AssemblyModuleBuilderProtocol {
         return navController
     }
     
-    func createTimePickerViewController(router: RouterProtocol, setting: StaticSettingOption) -> UIViewController {
+    func createTimePickerViewController(router: RouterProtocol, setting: TimeSettingOption) -> UIViewController {
         let view = TimePickerViewController()
         let presenter = TimePickerViewPresenter(view: view, router: router, setting: setting)
         view.presenter = presenter
