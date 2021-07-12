@@ -1,4 +1,4 @@
-# iOS-Alarm
+# pomodoro
 ## Description
 - Pomodoro timer app for ios.
 
