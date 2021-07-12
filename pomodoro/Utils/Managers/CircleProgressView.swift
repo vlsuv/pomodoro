@@ -11,7 +11,6 @@ import UIKit
 class CircleProgressView: UIView {
     
     // MARK: - Properties
-//    var progressView: UIView = UIView()
     private var circleLayer = CAShapeLayer()
     private var progressLayer = CAShapeLayer()
     
@@ -29,22 +28,33 @@ class CircleProgressView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        self.traitCollection.performAsCurrent {
+            self.progressLayer.strokeColor = Colors.selectedColor.cgColor
+            self.circleLayer.strokeColor = Colors.stepButtonUnselectedColor.cgColor
+        }
+    }
+    
     // MARK: - Configures
     func createCircularPath() {
-        let circularPath = UIBezierPath(arcCenter: CGPoint(x: self.frame.size.width / 2.0, y: self.frame.size.height / 2.0), radius: 120, startAngle: -.pi / 2, endAngle: 3 * .pi / 2, clockwise: true)
+        let circularPath = UIBezierPath(arcCenter: CGPoint(x: self.frame.size.width / 2.0,
+                                                           y: self.frame.size.height / 2.0),
+                                        radius: 120,
+                                        startAngle: -.pi / 2,
+                                        endAngle: 3 * .pi / 2,
+                                        clockwise: true)
         
         circleLayer.path = circularPath.cgPath
         circleLayer.fillColor = UIColor.clear.cgColor
         circleLayer.lineCap = .round
         circleLayer.lineWidth = 6.0
-        circleLayer.strokeColor = Colors.lightGray.cgColor
         
         progressLayer.path = circularPath.cgPath
         progressLayer.fillColor = UIColor.clear.cgColor
         progressLayer.lineCap = .round
         progressLayer.lineWidth = 6.0
         progressLayer.strokeEnd = 0
-        progressLayer.strokeColor = Colors.baseRed.cgColor
         
         self.layer.addSublayer(circleLayer)
         self.layer.addSublayer(progressLayer)

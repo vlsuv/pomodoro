@@ -13,7 +13,7 @@ class SettingViewController: UIViewController {
     // MARK: - Properties
     private var tableView: UITableView = {
         let tableView = UITableView(frame: .zero, style: .grouped)
-        tableView.backgroundColor = Colors.white
+        tableView.backgroundColor = Colors.backgroundColor
         tableView.isScrollEnabled = false
         return tableView
     }()
@@ -23,12 +23,17 @@ class SettingViewController: UIViewController {
     // MARK: - Init
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = Colors.white
+        view.backgroundColor = Colors.backgroundColor
         
+        configureNavigationController()
         configureTableView()
     }
     
     // MARK: - Configures
+    private func configureNavigationController() {
+        self.navigationController?.navigationBar.largeTitleTextAttributes = [NSAttributedString.Key.foregroundColor: Colors.navigationTitleColor]
+    }
+    
     private func configureTableView() {
         tableView.dataSource = self
         tableView.delegate = self
@@ -97,5 +102,11 @@ extension SettingViewController: UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 46
+    }
+    
+    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        let title = presenter?.settings[section].title
+        
+        return title
     }
 }

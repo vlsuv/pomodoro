@@ -17,14 +17,16 @@ class SwitchSettingCell: UITableViewCell {
     
     var titleLabel: UILabel = {
         let label = UILabel()
-        label.textColor = Colors.black
+        label.textColor = Colors.baseTextColor
         label.textAlignment = .left
-        label.font = .systemFont(ofSize: 16, weight: .light)
+        label.font = .systemFont(ofSize: 16, weight: .regular)
         return label
     }()
     
     var switchView: UISwitch = {
         let switchView = UISwitch()
+        switchView.tintColor = Colors.stepButtonUnselectedColor
+        switchView.onTintColor = Colors.selectedColor
         return switchView
     }()
     
@@ -41,6 +43,12 @@ class SwitchSettingCell: UITableViewCell {
     // MARK: - Init
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
+        contentView.backgroundColor = Colors.backgroundColor
+        backgroundColor = Colors.backgroundColor
+        
+        accessoryView?.tintColor = Colors.black
+        accessoryView?.backgroundColor = Colors.black
+        
         addSubviews()
         configureConstraints()
         

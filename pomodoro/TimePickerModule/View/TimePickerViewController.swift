@@ -18,7 +18,7 @@ class TimePickerViewController: UIViewController {
     // MARK: - Init
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = Colors.white
+        view.backgroundColor = Colors.backgroundColor
         
         configureNavigationController()
         configurePickerView()
@@ -46,7 +46,9 @@ class TimePickerViewController: UIViewController {
         navigationItem.leftBarButtonItem = cancelButton
         navigationItem.rightBarButtonItem = saveButton
         
-        navigationController?.navigationBar.tintColor = Colors.baseRed
+        navigationController?.navigationBar.tintColor = Colors.navigationButtonColor
+        navigationController?.navigationBar.backgroundColor = Colors.backgroundColor
+        navigationController?.navigationBar.isTranslucent = true
     }
     
     private func configurePickerView() {
@@ -76,15 +78,15 @@ extension TimePickerViewController: UIPickerViewDataSource {
         let options = presenter.setting.params
         return options.count
     }
-    
-    func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
-        let option = presenter.setting.params[row]
-        return "\(option) \(presenter.setting.abbreviation)"
-    }
 }
 
 // MARK: - UIPickerViewDelegate
 extension TimePickerViewController: UIPickerViewDelegate {
+    func pickerView(_ pickerView: UIPickerView, attributedTitleForRow row: Int, forComponent component: Int) -> NSAttributedString? {
+        let option = presenter.setting.params[row]
+
+        return NSAttributedString(string: "\(option) \(presenter.setting.abbreviation)", attributes: [NSAttributedString.Key.foregroundColor: Colors.baseTextColor])
+    }
 }
 
 

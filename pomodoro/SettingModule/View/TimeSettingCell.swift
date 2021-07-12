@@ -15,17 +15,17 @@ class TimeSettingCell: UITableViewCell {
     
     private var titleLabel: UILabel = {
         let label = UILabel()
-        label.textColor = Colors.black
+        label.textColor = Colors.baseTextColor
         label.textAlignment = .left
-        label.font = .systemFont(ofSize: 16, weight: .light)
+        label.font = .systemFont(ofSize: 16, weight: .regular)
         return label
     }()
     
     private var selectedParamLabel: UILabel = {
         let label = UILabel()
         label.textAlignment = .right
-        label.textColor = Colors.mediumGray
-        label.font = .systemFont(ofSize: 16, weight: .light)
+        label.textColor = Colors.commentColor
+        label.font = .systemFont(ofSize: 16, weight: .regular)
         return label
     }()
     
@@ -40,6 +40,8 @@ class TimeSettingCell: UITableViewCell {
     // MARK: - Init
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
+        contentView.backgroundColor = Colors.backgroundColor
+        
         addSubviews()
         configureConstraints()
     }

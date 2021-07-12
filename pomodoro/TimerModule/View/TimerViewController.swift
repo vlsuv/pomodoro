@@ -14,15 +14,14 @@ class TimerViewController: UIViewController {
     let timeLabel: UILabel = {
         let label = UILabel()
         label.font = .systemFont(ofSize: 46, weight: .medium)
-        label.textColor = Colors.darkGray
-        label.text = "25:00"
+        label.textColor = Colors.timeTextColor
         return label
     }()
     
     var timerTypeLabel: UILabel = {
         let label = UILabel()
         label.font = .systemFont(ofSize: 16, weight: .medium)
-        label.textColor = Colors.darkGray
+        label.textColor = Colors.timeTextColor
         label.textAlignment = .center
         return label
     }()
@@ -47,13 +46,13 @@ class TimerViewController: UIViewController {
         let button = UIButton()
         let normalAttributedString = NSAttributedString(string: "Start", attributes: [
             .font: UIFont.systemFont(ofSize: 14, weight: .medium),
-            .foregroundColor: Colors.white
+            .foregroundColor: Colors.foregroundColor
         ])
         let selectAttributedString = NSAttributedString(string: "Pause", attributes: [
             .font: UIFont.systemFont(ofSize: 14, weight: .medium),
-            .foregroundColor: Colors.white
+            .foregroundColor: Colors.foregroundColor
         ])
-        button.backgroundColor = Colors.baseRed
+        button.backgroundColor = Colors.buttonBackgroundColor
         button.setAttributedTitle(normalAttributedString, for: .normal)
         button.setAttributedTitle(selectAttributedString, for: .selected)
         button.addTarget(self, action: #selector(handleStartTimer), for: .touchUpInside)
@@ -64,10 +63,10 @@ class TimerViewController: UIViewController {
         let button = UIButton()
         let normalAttributedString = NSAttributedString(string: "Stop", attributes: [
             .font: UIFont.systemFont(ofSize: 14, weight: .medium),
-            .foregroundColor: Colors.white
+            .foregroundColor: Colors.foregroundColor
         ])
         button.setAttributedTitle(normalAttributedString, for: .normal)
-        button.backgroundColor = Colors.baseRed
+        button.backgroundColor = Colors.buttonBackgroundColor
         button.addTarget(self, action: #selector(handleStopTimer), for: .touchUpInside)
         return button
     }()
@@ -81,8 +80,9 @@ class TimerViewController: UIViewController {
     // MARK: - Init
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = Colors.white
+        view.backgroundColor = Colors.backgroundColor
         
+        configureNavigationController()
         setupTimeLabel()
         setupTimeButtons()
         configureProgressView()
@@ -100,6 +100,10 @@ class TimerViewController: UIViewController {
     }
     
     // MARK: - Configures
+    private func configureNavigationController() {
+        self.navigationController?.navigationBar.largeTitleTextAttributes = [NSAttributedString.Key.foregroundColor: Colors.navigationTitleColor]
+    }
+    
     private func setupTimeLabel() {
         view.addSubview(timeLabel)
         timeLabel.translatesAutoresizingMaskIntoConstraints = false
@@ -129,18 +133,18 @@ class TimerViewController: UIViewController {
     
     private func configureProgressView() {
         view.addSubview(circleProgressView)
-        circleProgressView.center = view.center
+        circleProgressView.translatesAutoresizingMaskIntoConstraints = false
+        circleProgressView.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
+        circleProgressView.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
     }
     
     private func configureStepsButtons() {
         for _ in 0..<taskGoal {
             let button = UIButton()
-            button.layer.borderColor = Colors.lightGray.cgColor
-            button.layer.borderWidth = 1.5
-            
             let buttonSize: CGFloat = 20
             button.anchor(height: buttonSize, width: buttonSize)
             button.layer.cornerRadius = buttonSize / 2
+            button.backgroundColor = Colors.stepButtonUnselectedColor
             
             intervalButtons.append(button)
             intervalButtonsStackView.addArrangedSubview(button)
@@ -193,9 +197,9 @@ extension TimerViewController {
     private func updateStepsButtons(with steps: Int) {
         for (index, button) in intervalButtons.enumerated() {
             if index < steps {
-                button.backgroundColor = Colors.baseRed
+                button.backgroundColor = Colors.selectedColor
             } else {
-                button.backgroundColor = Colors.white
+                button.backgroundColor = Colors.stepButtonUnselectedColor
             }
         }
     }

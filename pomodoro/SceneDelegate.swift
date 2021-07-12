@@ -24,6 +24,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         window?.rootViewController = tabBarController
         router.initilizationViewController()
         window?.makeKeyAndVisible()
+        
+        window?.overrideUserInterfaceStyle = UserSettings.shared.darkMode ? .dark : .light
     }
 
     func sceneDidDisconnect(_ scene: UIScene) {

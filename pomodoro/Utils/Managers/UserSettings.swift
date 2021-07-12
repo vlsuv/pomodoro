@@ -25,6 +25,7 @@ final class UserSettings {
         case nowBreak
         
         case reminders
+        case darkMode
     }
     
     var workInterval: Int {
@@ -123,6 +124,17 @@ final class UserSettings {
         set {
             let defaults = UserDefaults.standard
             let key = settingKeys.reminders.rawValue
+            defaults.set(newValue, forKey: key)
+        }
+    }
+    
+    var darkMode: Bool {
+        get {
+            return UserDefaults.standard.bool(forKey: settingKeys.darkMode.rawValue)
+        }
+        set {
+            let defaults = UserDefaults.standard
+            let key = settingKeys.darkMode.rawValue
             defaults.set(newValue, forKey: key)
         }
     }

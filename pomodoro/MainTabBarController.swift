@@ -13,6 +13,9 @@ class MainTabBarController: UITabBarController {
     // MARK: - Init
     override func viewDidLoad() {
         super.viewDidLoad()
-        UITabBar.appearance().tintColor = Colors.baseRed
+        UITabBar.appearance().tintColor = Colors.selectedColor
+        tabBar.isTranslucent = false
+        tabBar.barTintColor = Colors.backgroundColor
+        tabBar.unselectedItemTintColor = Colors.commentColor
     }
 }
