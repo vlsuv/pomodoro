@@ -32,7 +32,10 @@ class SwitchSettingCell: UITableViewCell {
     
     func configure(_ model: SwitchSettingOption) {
         titleLabel.text = model.title
-        switchView.isOn = model.isOn
+        
+        if let isOn = model.isOn?() {
+            switchView.isOn = isOn
+        }
     }
     
     // MARK: - Actions

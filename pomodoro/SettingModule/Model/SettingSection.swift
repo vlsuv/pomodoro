@@ -29,5 +29,5 @@ struct TimeSettingOption {
 struct SwitchSettingOption {
     var title: String
     var handler: (() -> ())?
-    var isOn: Bool
+    var isOn: (() -> (Bool))?
 }

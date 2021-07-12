@@ -97,7 +97,7 @@ class SettingViewPresenter: SettingViewPresenterProtocol {
                                             handler: {
                                                 UserSettings.shared.reminders.toggle()
         },
-                                            isOn: UserSettings.shared.reminders)
+                                            isOn: { UserSettings.shared.reminders })
         
         let theme = SwitchSettingOption(title: "Dark Mode",
                                         handler: {
@@ -107,7 +107,7 @@ class SettingViewPresenter: SettingViewPresenterProtocol {
                                                 window.overrideUserInterfaceStyle = UserSettings.shared.darkMode ? .dark : .light
                                             }
         },
-                                        isOn: UserSettings.shared.darkMode)
+                                        isOn: { UserSettings.shared.darkMode })
         
         let generalSection = SettingSection(title: "GENERAL", option: [
             .switchCell(model: reminders),
