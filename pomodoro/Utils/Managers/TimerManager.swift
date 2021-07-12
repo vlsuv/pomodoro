@@ -35,6 +35,17 @@ enum TimerType {
             return "Long Break"
         }
     }
+    
+    var seconds: Double {
+        switch self {
+        case .work:
+            return Double(UserSettings.shared.workInterval) * 60
+        case .shortBreak:
+            return Double(UserSettings.shared.shortBreak) * 60
+        case .longBreak:
+            return Double(UserSettings.shared.longBreak) * 60
+        }
+    }
 }
 
 protocol TimerManagerProtocol: class {
@@ -136,7 +147,7 @@ class TimerManager: TimerManagerProtocol {
         
         endDate = Date().addingTimeInterval(secondsLeft)
         
-        timerState = .start(secondsLeft: secondsLeft, passedSeconds: workInterval - secondsLeft, timerType: timerType)
+        timerState = .start(secondsLeft: secondsLeft, passedSeconds:  timerType.seconds - secondsLeft, timerType: timerType)
         
         if !endDateSetted {
             endDateSetted = true
