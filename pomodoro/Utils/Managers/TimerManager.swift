@@ -170,8 +170,6 @@ class TimerManager: TimerManagerProtocol {
                 passedSteps += 1
             }
             
-            nowBreak.toggle()
-            
             nextTimer()
         }
     }
@@ -192,6 +190,8 @@ class TimerManager: TimerManagerProtocol {
         timer = nil
         
         endDate = nil
+        
+        nowBreak.toggle()
         
         switch timerType {
         case .work:
@@ -238,6 +238,11 @@ extension TimerManager {
         }
         
         if Date() > endDate {
+            self.passedSteps = passedSteps
+            self.nowBreak = nowBreak
+            
+            self.passedSteps += 1
+            
             nextTimer()
         } else {
             self.secondsLeft = endDate.timeIntervalSince(Date())

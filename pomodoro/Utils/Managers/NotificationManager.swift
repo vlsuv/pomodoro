@@ -25,7 +25,7 @@ class NotificationManager: NotificationManagerType {
     // MARK: - Input Handlers
     func sendNotification(with date: Date) {
         let notificationContent = UNMutableNotificationContent()
-        notificationContent.body = "timer ended"
+        notificationContent.body = "step is ended"
         notificationContent.sound = .default
         
         let components = Calendar(identifier: .gregorian).dateComponents([.hour, .minute, .second, .nanosecond], from: date)

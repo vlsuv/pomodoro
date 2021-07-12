@@ -86,6 +86,7 @@ class TimerViewController: UIViewController {
         setupTimeLabel()
         setupTimeButtons()
         configureProgressView()
+        configureStepsButtonsStackView()
         configureStepsButtons()
         configureTimerTypeLabel()
     }
@@ -138,6 +139,12 @@ class TimerViewController: UIViewController {
         circleProgressView.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
     }
     
+    private func configureStepsButtonsStackView() {
+        view.addSubview(intervalButtonsStackView)
+        intervalButtonsStackView.anchor(bottom: startButton.topAnchor, paddingBottom: 40)
+        intervalButtonsStackView.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
+    }
+    
     private func configureStepsButtons() {
         for _ in 0..<taskGoal {
             let button = UIButton()
@@ -149,10 +156,6 @@ class TimerViewController: UIViewController {
             intervalButtons.append(button)
             intervalButtonsStackView.addArrangedSubview(button)
         }
-        
-        view.addSubview(intervalButtonsStackView)
-        intervalButtonsStackView.anchor(bottom: startButton.topAnchor, paddingBottom: 40)
-        intervalButtonsStackView.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
     }
     
     private func configureTimerTypeLabel() {
@@ -164,6 +167,13 @@ class TimerViewController: UIViewController {
 
 // MARK: - TimerViewProtocol
 extension TimerViewController: TimerViewProtocol {
+    func updateView() {
+        circleProgressView.removeAnimation()
+        
+        removeAllStepButtons()
+        configureStepsButtons()
+    }
+    
     func updateTimerState(_ state: TimerState) {
         
         switch state {
@@ -201,6 +211,16 @@ extension TimerViewController {
             } else {
                 button.backgroundColor = Colors.stepButtonUnselectedColor
             }
+        }
+    }
+}
+
+extension TimerViewController {
+    private func removeAllStepButtons() {
+        intervalButtons = [UIButton]()
+        
+        intervalButtonsStackView.arrangedSubviews.forEach { intervalButtonsStackView.removeArrangedSubview($0)
+            $0.removeFromSuperview()
         }
     }
 }

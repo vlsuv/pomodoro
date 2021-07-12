@@ -11,6 +11,7 @@ import UIKit
 protocol TimerViewProtocol {
     func updateTimerLabel(with time: String)
     func updateTimerState(_ state: TimerState)
+    func updateView()
 }
 
 protocol TimerViewPresenterProtocol {
@@ -42,6 +43,12 @@ class TimerViewPresenter: TimerViewPresenterProtocol {
         
         if let time = timerManager?.secondsLeftText() {
             view.updateTimerLabel(with: time)
+        }
+        
+        NotificationCenter.default.addObserver(forName: .didUpdateTimerSettings, object: nil, queue: nil) { [weak self] _ in
+
+            self?.timerManager?.stopTimer()
+            self?.view.updateView()
         }
     }
     

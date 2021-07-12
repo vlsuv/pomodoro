@@ -53,6 +53,8 @@ class SwitchSettingCell: UITableViewCell {
         configureConstraints()
         
         switchView.addTarget(self, action: #selector(switchValueChanged(_:)), for: .valueChanged)
+        
+        selectionStyle = .none
     }
     
     required init?(coder: NSCoder) {
